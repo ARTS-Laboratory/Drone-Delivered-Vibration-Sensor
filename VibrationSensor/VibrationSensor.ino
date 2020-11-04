@@ -18,18 +18,19 @@ sca3300_library::SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, sca3300_library
 unsigned int fileNameCount = 0;
 
 void recordData(int16_t* data, uint32_t* recordStartTime, uint32_t* recordEndTime);
-void writeSD(int16_t* data, uint32_t* recordStartTime, uint32_t* recordEndTime, char* fileName);
+void writeSD(int16_t* data, const uint32_t recordStartTime, const uint32_t recordEndTime, char* fileName);
+void printData(int16_t* data, const uint32_t recordStartTime, const uint32_t recordEndTime);
 
 void setup() {
 	Serial.begin(9600);
 	pinMode(LED_PIN, OUTPUT);
 	sca3300.initChip(false);
-	Serial.println("Initializing SD Card...");
-	if (!SD.begin(BUILTIN_SDCARD)) {
-		Serial.println("Card Failed, or NOT Present");
-		return;
-	}
-	Serial.println("SD Card Initialized.");
+	//Serial.println("Initializing SD Card...");
+	//if (!SD.begin(BUILTIN_SDCARD)) {
+	//	Serial.println("Card Failed, or NOT Present");
+	//	return;
+	//}
+	//Serial.println("SD Card Initialized.");
 }
 
 void loop() {
@@ -40,9 +41,10 @@ void loop() {
 		uint32_t recordEndTime = 0;
 		recordData(data, &recordStartTime, &recordEndTime);
 		// generate file name
-		char fileName[8];
-		sprintf(fileName, "%03d.csv", fileNameCount);
-		writeSD(data, &recordStartTime, &recordEndTime, fileName);
+		//char fileName[8];
+		//sprintf(fileName, "%03d.csv", fileNameCount);
+		//writeSD(data, &recordStartTime, &recordEndTime, fileName);
+		printData(data, recordStartTime, recordEndTime);
 	}
 }
 
@@ -57,10 +59,10 @@ void recordData(int16_t* data, uint32_t* recordStartTime, uint32_t* recordEndTim
 	Serial.println("Finish Recording");
 }
 
-void writeSD(int16_t* data, uint32_t* recordStartTime, uint32_t* recordEndTime, char* fileName) {
+void writeSD(int16_t* data, const uint32_t recordStartTime, const uint32_t recordEndTime, char* fileName) {
 	File dataFile = SD.open(fileName, FILE_WRITE);
 	if (SD.exists(fileName)) {
-		dataFile.printf("%lu\n", 1 / (DATA_POINT / (*recordStartTime - *recordEndTime) * 1000));
+		dataFile.printf("%lu\n", 1 / (DATA_POINT / (recordStartTime - recordEndTime) * 1000));
 		for (size_t i = 0; i < DATA_POINT; ++i) {
 			dataFile.println(data[i]);
 		}
@@ -70,10 +72,20 @@ void writeSD(int16_t* data, uint32_t* recordStartTime, uint32_t* recordEndTime, 
 		Serial.println("Finish Writing to SD Card");
 		digitalWrite(LED_PIN, LOW);
 		Serial.print("Frequency:");
-		Serial.println(DATA_POINT / ((*recordEndTime - *recordStartTime) * .001));
+		Serial.println(DATA_POINT / ((recordEndTime - recordStartTime) * .001));
 		Serial.println("_______________________________");
 	}
 	else {
 		Serial.printf("%c NOT Created", fileName);
 	}
+}
+
+void printData(int16_t* data, const uint32_t recordStartTime, const uint32_t recordEndTime) {
+	for (size_t i = 0; i < DATA_POINT; ++i) {
+		Serial.println(data[i]);
+	}
+	digitalWrite(LED_PIN, LOW);
+	Serial.print("Frequency:");
+	Serial.println(DATA_POINT / ((recordEndTime - recordStartTime) * .001));
+	Serial.println("_______________________________");
 }
