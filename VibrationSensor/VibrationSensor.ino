@@ -6,7 +6,8 @@
 #include <SPI.h>
 #include <SD.h>
 
-const uint8_t SCA3300_CHIP_SELECT = 10;
+const uint8_t SCA3300_CHIP_SELECT = 5;
+const uint8_t SD_CHIP_SELECT = 10;
 const uint8_t LED_PIN = 2;
 const uint8_t WRITE_PIN = 3;
 const uint32_t SPI_SPEED = 2000000; // typ. f_sck = 2 MHz
@@ -23,7 +24,7 @@ void setup() {
 	Serial.begin(9600);
 	pinMode(LED_PIN, OUTPUT);
 	sca3300.initChip(false);
-	Serial.print("Initializing SD Card...");
+	Serial.println("Initializing SD Card...");
 	if (!SD.begin(BUILTIN_SDCARD)) {
 		Serial.println("Card Failed, or NOT Present");
 		return;
