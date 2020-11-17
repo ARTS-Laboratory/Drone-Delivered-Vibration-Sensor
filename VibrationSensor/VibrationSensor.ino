@@ -5,30 +5,30 @@
 #include <SCA3300.h>
 #include <SD.h>
 
-const uint8_t SCA3300_CHIP_SELECT = 5; //PCB Chip Select
+constexpr uint8_t SCA3300_CHIP_SELECT = 5; //PCB Chip Select
 //const uint8_t SCA3300_CHIP_SELECT = 10; //Development Board Chip Select
-const uint8_t SD_CHIP_SELECT = 10;
-const uint8_t LED_PIN = 2;
-const uint8_t WRITE_PIN = 3;
-//74295
-const uint32_t SPI_SPEED = 2000000; // typ. f_sck = 2 MHz
+constexpr uint8_t SD_CHIP_SELECT = 10;
+//constexpr uint8_t LED_PIN = 2;
+constexpr uint8_t WRITE_PIN = 3;
+constexpr uint32_t SPI_SPEED = 2000000; // typ. f_sck = 2 MHz
 //const size_t DATA_POINT = 222220;
-const size_t DATA_POINT = 70000;
+constexpr size_t DATA_POINT = 70000; // 74295
+constexpr uint32_t DELAY_TIME = 0;
 // MODE#1 is 3G
 // MODE#3 is 1.5G
 sca3300_library::SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, sca3300_library::OperationMode::MODE3, true); // MODE#1 is 3G
 
 unsigned int fileNameCount = 0;
 
-void recordData(uint16_t* data, uint32_t* timeStamps);
-void writeSDRaw(uint16_t* data, uint32_t* timeStamps, char* fileName);
-void writeSDConverted(uint16_t* data, uint32_t* timeStamps, sca3300_library::OperationMode operationMode, char* fileName);
-void printDataRaw(uint16_t* data, uint32_t* timeStamps);
-void printDataConverted(uint16_t* data, uint32_t* timeStamps, sca3300_library::OperationMode operationMode);
+void recordData(int16_t* data, uint32_t* timeStamps, uint32_t delayTime);
+void writeSDRaw(int16_t* data, uint32_t* timeStamps, char* fileName);
+void writeSDConverted(int16_t* data, uint32_t* timeStamps, sca3300_library::OperationMode operationMode, char* fileName);
+void printDataRaw(int16_t* data, uint32_t* timeStamps);
+void printDataConverted(int16_t* data, uint32_t* timeStamps, sca3300_library::OperationMode operationMode);
 
 void setup() {
 	Serial.begin(9600);
-	pinMode(LED_PIN, OUTPUT);
+	//pinMode(LED_PIN, OUTPUT);
 	Serial.println("Initializing SD Card...");
 	if (!SD.begin(SD_CHIP_SELECT)) {
 		Serial.println("Card Failed, or NOT Present");
@@ -39,28 +39,30 @@ void setup() {
 }
 
 void loop() {
-	digitalWrite(LED_PIN, HIGH);
-	uint16_t data[DATA_POINT];
+	//digitalWrite(LED_PIN, HIGH);
+	int16_t data[DATA_POINT];
 	uint32_t timeStamps[DATA_POINT];
-	recordData(data, timeStamps);
+	recordData(data, timeStamps, DELAY_TIME);
 	// generate file name
 	char fileName[8];
 	sprintf(fileName, "%03d.csv", fileNameCount);
 	writeSDConverted(data, timeStamps, sca3300.getOperationMode(), fileName);
+	//printDataRaw(data, timeStamps);
 	printDataConverted(data, timeStamps, sca3300.getOperationMode());
 }
 
-void recordData(uint16_t* data, uint32_t* timeStamps) {
+void recordData(int16_t* data, uint32_t* timeStamps, uint32_t delayTime) {
 	Serial.println("Start Recording");
 	// record data
 	for (size_t i = 0; i < DATA_POINT; ++i) {
 		data[i] = sca3300.getAccelRaw(sca3300_library::Axis::Z);
-		timeStamps[i] = millis();
+		timeStamps[i] = micros();
+		delayMicroseconds(delayTime);
 	}
 	Serial.println("Finish Recording");
 }
 
-void writeSDRaw(uint16_t* data, uint32_t* timeStamps, char* fileName) {
+void writeSDRaw(int16_t* data, uint32_t* timeStamps, char* fileName) {
 	File dataFile = SD.open(fileName, FILE_WRITE);
 	if (SD.exists(fileName)) {
 		for (size_t i = 0; i < DATA_POINT; ++i) {
@@ -73,14 +75,13 @@ void writeSDRaw(uint16_t* data, uint32_t* timeStamps, char* fileName) {
 		dataFile.flush();
 		dataFile.close();
 		Serial.println("Finish Writing to SD Card");
-		digitalWrite(LED_PIN, LOW);
 	}
 	else {
 		Serial.printf("%c NOT Created", fileName);
 	}
 }
 
-void writeSDConverted(uint16_t* data, uint32_t* timeStamps, sca3300_library::OperationMode operationMode, char* fileName) {
+void writeSDConverted(int16_t* data, uint32_t* timeStamps, sca3300_library::OperationMode operationMode, char* fileName) {
 	File dataFile = SD.open(fileName, FILE_WRITE);
 	if (SD.exists(fileName)) {
 		for (size_t i = 0; i < DATA_POINT; ++i) {
@@ -94,7 +95,7 @@ void writeSDConverted(uint16_t* data, uint32_t* timeStamps, sca3300_library::Ope
 		dataFile.flush();
 		dataFile.close();
 		Serial.println("Finish Writing to SD Card");
-		digitalWrite(LED_PIN, LOW);
+		//digitalWrite(LED_PIN, LOW);
 	}
 	else {
 		Serial.printf("%c NOT Created", fileName);
@@ -102,16 +103,19 @@ void writeSDConverted(uint16_t* data, uint32_t* timeStamps, sca3300_library::Ope
 }
 
 
-void printDataRaw(uint16_t* data, uint32_t* timeStamps) {
+void printDataRaw(int16_t* data, uint32_t* timeStamps) {
 	for (size_t i = 0; i < DATA_POINT; ++i) {
 		//Serial.printf("%d, %llu\n", data[i], timeStamps[i]);
 		Serial.print(data[i]);
 		Serial.print(",");
 		Serial.println(timeStamps[i]);
 	}
+	double frequencyAverage = static_cast<double>(DATA_POINT) / static_cast<double>(timeStamps[DATA_POINT - 1] - timeStamps[0]) * 1000000.0;
+	Serial.print("Average Frequency: ");
+	Serial.println(frequencyAverage);
 }
 
-void printDataConverted(uint16_t* data, uint32_t* timeStamps, sca3300_library::OperationMode operationMode) {
+void printDataConverted(int16_t* data, uint32_t* timeStamps, sca3300_library::OperationMode operationMode) {
 	for (size_t i = 0; i < DATA_POINT; ++i) {
 		double convertedData = sca3300_library::SCA3300::convertRawAccelToAccel(data[i], operationMode);
 		//Serial.printf("%Lf, %llu\n", convertedData, timeStamps[i]);
@@ -119,5 +123,7 @@ void printDataConverted(uint16_t* data, uint32_t* timeStamps, sca3300_library::O
 		Serial.print(",");
 		Serial.println(timeStamps[i]);
 	}
-	digitalWrite(LED_PIN, LOW);
+	double frequencyAverage = static_cast<double>(DATA_POINT)/static_cast<double>(timeStamps[DATA_POINT-1] - timeStamps[0]) * 1000000.0;
+	Serial.print("Average Frequency: ");
+	Serial.println(frequencyAverage);
 }
