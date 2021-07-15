@@ -1,0 +1,18 @@
+Step 2 : SW Reset
+
+Step 4 : Set Measurement Mode
+
+0 0 0 11110001 
+
+Step 6 : Read Status Summary
+10110111 0 10000000 10110101 
+
+Step 7 : Read Status Summary
+11011 0 10001 10111001 
+
+Step 8 : Read Status Summary
+11001 0 10001 10111010 
+
+Do a WHOAMI
+
+10000011 0 0 10111101 
