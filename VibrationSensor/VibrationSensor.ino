@@ -12,8 +12,11 @@ constexpr uint8_t SD_CHIP_SELECT = 10;
 constexpr uint8_t WRITE_PIN = 3;
 constexpr uint32_t SPI_SPEED = 2000000; // typ. f_sck = 2 MHz
 //const size_t DATA_POINT = 222220;
-constexpr size_t DATA_POINT = 70000; // 74295
-constexpr uint32_t DELAY_TIME = 0;
+constexpr size_t DATA_POINT = 74000; // 74295 Samples
+
+//constexpr uint32_t DELAY_TIME = 0;
+constexpr uint32_t DELAY_TIME = 6722;  //MicroSeconds
+
 // MODE#1 is 3G
 // MODE#3 is 1.5G
 sca3300_library::SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, sca3300_library::OperationMode::MODE3, true); // MODE#1 is 3G
@@ -29,6 +32,7 @@ void printDataConverted(int16_t* data, uint32_t* timeStamps, sca3300_library::Op
 void setup() {
 	Serial.begin(9600);
 	//pinMode(LED_PIN, OUTPUT);
+ 
 	Serial.println("Initializing SD Card...");
 	if (!SD.begin(SD_CHIP_SELECT)) {
 		Serial.println("Card Failed, or NOT Present");
