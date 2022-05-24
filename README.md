@@ -10,4 +10,4 @@ UAV deployable structual health monitoring sensor package
 #  image: deplyment and structure vibration signiture along with delivary trajectory. 
 
 
-# remember to copy the library to your arduino libraries folder!!!
+# remember to copy the library to your arduino libraries folder before compiling the code onto the sensor package
