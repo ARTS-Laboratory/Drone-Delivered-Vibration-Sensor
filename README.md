@@ -14,7 +14,7 @@ Figure 1: Video of UAV deploying a sensor package in the Rock Branch Creek at th
 ## [Signal Processing](signal_processing)
 Signal procesing and filtering: includes transfer function based filter to enhance signal quality
 
-## [Hardware Hesign](hardware_design)
+## [Hardware Design](hardware_design)
 Vibration sensor package: includes sensor package software (Arduino) and hardware (circuit) files along with package frame design.
 
 <br /><br /><br />
