@@ -35,6 +35,7 @@ Cite as:
 
 @Misc{Satme2022DroneDeliveredVibration,     
   author = {Joud Satme and Austin Downey},  
+    howpublished = {GitHub},    
   title  = {Drone Delivered Vibration Sensor},
   year   = {2022},  
   groups = {{ARTS-L}ab},    
