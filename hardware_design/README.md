@@ -9,3 +9,4 @@
 ## Version 0.2
 1. Ryan's Work
 1. Focused on reducing package footprint while improving manufacturability.
+1. Creating a stable package with options for different situations.
