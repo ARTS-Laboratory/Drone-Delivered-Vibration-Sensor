@@ -1,0 +1,27 @@
+Testing on Beam Setup (7/1/22)
+Two Pin Support Close Accelerometers
+
+Test 1
+Mode 1 - 33.87 Hz
+Mode 2 - 137.9 Hz
+Mode 3 - 302.2 Hz
+
+Test 2
+Mode 1 - 34.83 Hz
+Mode 2 - 136.8 Hz
+Mode 3 - 301.8 Hz
+
+Test 3
+Mode 1 - 34.83 Hz
+Mode 2 - 137.5 Hz
+Mode 3 - 301.9 Hz
+
+Test 4
+Mode 1 - 34.83 Hz
+Mode 2 - 137.8 Hz
+Mode 3 - 302.1 Hz
+
+Test 5
+Mode 1 - 34.83 Hz
+Mode 2 - 137.5 Hz
+Mode 3 - 303.3 Hz
