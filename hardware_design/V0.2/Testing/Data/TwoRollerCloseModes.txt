@@ -1,5 +1,5 @@
 Testing on Beam Setup (7/1/22)
-Two Pin Support Close Accelerometers
+Two Roller Support Close Accelerometers
 
 Test 1
 Mode 1 - 33.87 Hz
