@@ -10,3 +10,8 @@
 1. Ryan's Work
 1. Focused on reducing package footprint while improving manufacturability.
 1. Creating a stable package with options for different situations.
+
+
+## Version 0.3
+1. Ryan's Work
+1. Same base package but includes RF and RTC for wireless synchronization.
