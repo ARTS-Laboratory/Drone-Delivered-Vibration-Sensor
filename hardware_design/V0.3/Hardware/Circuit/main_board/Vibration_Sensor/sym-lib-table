@@ -5,4 +5,5 @@
   (lib (name whs6-rescue)(type Legacy)(uri C:/Users/ryanj/Documents/KiCad/Libraries/Vibration_Sensor_Lib/whs6-rescue.lib)(options "")(descr ""))
   (lib (name Teensy4.0Custom)(type Legacy)(uri C:/Users/ryanj/Documents/KiCad/Libraries/Vibration_Sensor_Lib/Teensy4.0Custom)(options "")(descr ""))
   (lib (name Teensy4Custom)(type Legacy)(uri C:/Users/ryanj/Documents/KiCad/Libraries/Vibration_Sensor_Lib/Teensy4Custom.lib)(options "")(descr ""))
+  (lib (name Vibration_Sensor-rescue)(type Legacy)(uri ${KIPRJMOD}/Vibration_Sensor-rescue.lib)(options "")(descr ""))
 )
