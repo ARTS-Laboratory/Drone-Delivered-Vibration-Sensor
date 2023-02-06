@@ -1,4 +1,4 @@
-# Vibration Sensor Package
+# Drone Delivered Vibration Sensor
 UAV deployable sensor package for vibration-based structural health monitoring.
 
 
