@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L ARTS-Lab:Teensy4.0-teensy U2
+L Vibration_Sensor-rescue:Teensy4.0-teensy-ARTS-Lab U2
 U 1 1 6290ED71
 P 3200 3950
 F 0 "U2" H 3200 2335 50  0000 C CNN
@@ -25,7 +25,7 @@ F 3 "" H 2800 4150 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L ARTS-Lab:microSD_small Micro_SD1
+L Vibration_Sensor-rescue:microSD_small-ARTS-Lab Micro_SD1
 U 1 1 62911122
 P 6900 4350
 F 0 "Micro_SD1" V 6854 4378 50  0000 L CNN
@@ -36,7 +36,7 @@ F 3 "" H 6900 4350 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L ARTS-Lab:main_board_top_rail U5
+L Vibration_Sensor-rescue:main_board_top_rail-ARTS-Lab U5
 U 1 1 629135F7
 P 6650 5400
 F 0 "U5" V 6599 5428 50  0000 L CNN
@@ -168,7 +168,7 @@ $EndComp
 Wire Wire Line
 	7950 5250 7950 4950
 $Comp
-L ARTS-Lab:power_input U1
+L Vibration_Sensor-rescue:power_input-ARTS-Lab U1
 U 1 1 629E65AA
 P 3050 1600
 F 0 "U1" H 3050 1001 50  0000 C CNN
@@ -190,7 +190,7 @@ F 3 "~" H 3850 1400 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L ARTS-Lab:grounded_DIP_switch switch1
+L Vibration_Sensor-rescue:grounded_DIP_switch-ARTS-Lab switch1
 U 1 1 629E7EFF
 P 4650 950
 F 0 "switch1" H 4675 1115 50  0000 C CNN
@@ -422,7 +422,7 @@ Wire Wire Line
 Wire Wire Line
 	5050 3400 5050 4400
 $Comp
-L ARTS-Lab:nRF24L01+ U6
+L Vibration_Sensor-rescue:nRF24L01+-ARTS-Lab U6
 U 1 1 62C72ED1
 P 7050 3300
 F 0 "U6" V 7461 2925 50  0000 C CNN
@@ -563,11 +563,11 @@ Wire Wire Line
 	5050 2950 5050 3400
 Connection ~ 5050 3400
 Wire Wire Line
-	7900 3100 7900 3000
+	7900 3000 7900 3100
 Wire Wire Line
-	7900 3200 7950 3200
+	7950 2950 7950 3200
 Wire Wire Line
-	7950 3200 7950 2950
+	7950 3200 7900 3200
 Wire Wire Line
 	5050 2950 7950 2950
 $EndSCHEMATC

@@ -1,6 +1,92 @@
 EESchema-LIBRARY Version 2.4
 #encoding utf-8
 #
+# ARTS-Lab_Arduino_Nano_v2.x-MCU_Module-whs5-rescue
+#
+DEF ARTS-Lab_Arduino_Nano_v2.x-MCU_Module-whs5-rescue A 0 20 Y Y 1 F N
+F0 "A" -400 925 50 H V L BNN
+F1 "ARTS-Lab_Arduino_Nano_v2.x-MCU_Module-whs5-rescue" 200 -950 50 H V L TNN
+F2 "Module:Arduino_Nano" 0 0 50 H I C CIN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Arduino*Nano*
+$ENDFPLIST
+DRAW
+S -400 900 400 -900 0 1 10 f
+X D1/TX 1 -500 500 100 R 50 50 1 1 B
+X D7 10 -500 -100 100 R 50 50 1 1 B
+X D8 11 -500 -200 100 R 50 50 1 1 B
+X D9 12 -500 -300 100 R 50 50 1 1 B
+X D10 13 -500 -400 100 R 50 50 1 1 B
+X D11 14 -500 -500 100 R 50 50 1 1 B
+X D12 15 -500 -600 100 R 50 50 1 1 B
+X D13 16 -500 -700 100 R 50 50 1 1 B
+X 3V3 17 100 1000 100 D 50 50 1 1 w
+X AREF 18 500 200 100 L 50 50 1 1 I
+X A0 19 500 0 100 L 50 50 1 1 B
+X D0/RX 2 -500 600 100 R 50 50 1 1 B
+X A1 20 500 -100 100 L 50 50 1 1 B
+X A2 21 500 -200 100 L 50 50 1 1 B
+X A3 22 500 -300 100 L 50 50 1 1 B
+X A4 23 500 -400 100 L 50 50 1 1 B
+X A5 24 500 -500 100 L 50 50 1 1 B
+X A6 25 500 -600 100 L 50 50 1 1 B
+X A7 26 500 -700 100 L 50 50 1 1 B
+X +5V 27 200 1000 100 D 50 50 1 1 w
+X ~RESET 28 500 600 100 L 50 50 1 1 I
+X GND 29 100 -1000 100 U 50 50 1 1 W
+X ~RESET 3 500 500 100 L 50 50 1 1 I
+X VIN 30 -100 1000 100 D 50 50 1 1 W
+X GND 4 0 -1000 100 U 50 50 1 1 W
+X D2 5 -500 400 100 R 50 50 1 1 B
+X D3 6 -500 300 100 R 50 50 1 1 B
+X D4 7 -500 200 100 R 50 50 1 1 B
+X D5 8 -500 100 100 R 50 50 1 1 B
+X D6 9 -500 0 100 R 50 50 1 1 B
+ENDDRAW
+ENDDEF
+#
+# ARTS-Lab_grounded_DIP_switch
+#
+DEF ARTS-Lab_grounded_DIP_switch switch 0 40 Y Y 1 F N
+F0 "switch" 0 -100 50 H V C CNN
+F1 "ARTS-Lab_grounded_DIP_switch" 0 150 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+S -300 0 350 -250 0 1 0 f
+X ~ 1 -200 -350 100 U 50 50 1 1 I
+X ~ 2 0 -350 100 U 50 50 1 1 I
+X ~ 3 200 -350 100 U 50 50 1 1 I
+X ~ 4 -400 -150 100 R 50 50 1 1 I
+X ~ 5 450 -150 100 L 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
+# Analog_ADC_INA219AxD
+#
+DEF Analog_ADC_INA219AxD U 0 20 Y Y 1 F N
+F0 "U" -250 350 50 H V C CNN
+F1 "Analog_ADC_INA219AxD" 200 350 50 H V C CNN
+F2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" 800 -350 50 H I C CNN
+F3 "" 350 -100 50 H I C CNN
+ALIAS INA219BxD
+$FPLIST
+ SOIC*3.9x4.9mm*P1.27mm*
+$ENDFPLIST
+DRAW
+S -300 300 300 -300 0 1 10 f
+X A1 1 400 -100 100 L 50 50 1 1 I
+X A0 2 400 -200 100 L 50 50 1 1 I
+X SDA 3 400 200 100 L 50 50 1 1 B
+X SCL 4 400 100 100 L 50 50 1 1 I
+X VS 5 0 400 100 D 50 50 1 1 W
+X GND 6 0 -400 100 U 50 50 1 1 W
+X IN- 7 -400 -100 100 R 50 50 1 1 I
+X IN+ 8 -400 100 100 R 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
 # Device_Battery_Cell
 #
 DEF Device_Battery_Cell BT 0 0 N N 1 F N
@@ -96,19 +182,19 @@ X ~ 2 0 -150 50 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# Regulator_Linear_AP7361C-33E
+# Regulator_Linear_KA78M05_TO252
 #
-DEF Regulator_Linear_AP7361C-33E U 0 10 Y Y 1 F N
+DEF Regulator_Linear_KA78M05_TO252 U 0 10 Y Y 1 F N
 F0 "U" -150 125 50 H V C CNN
-F1 "Regulator_Linear_AP7361C-33E" 0 125 50 H V L CNN
-F2 "Package_TO_SOT_SMD:SOT-223-3_TabPin2" 0 225 50 H I C CIN
+F1 "Regulator_Linear_KA78M05_TO252" 0 125 50 H V L CNN
+F2 "Package_TO_SOT_SMD:TO-252-2" 0 225 50 H I C CIN
 F3 "" 0 -50 50 H I C CNN
-ALIAS SPX2920M3-5.0_SOT223 LT1129-3.3_SOT223 LT1129-5.0_SOT223 LM2937xMP AP7361C-10E AP7361C-12E AP7361C-15E AP7361C-18E AP7361C-25E AP7361C-28E AP7361C-33E
+ALIAS MC78M05_TO252 KA78M05_TO252 LF15_TO252 LF18_TO252 LF25_TO252 LF33_TO252 LF50_TO252 LF60_TO252 LF80_TO252 LF85_TO252 LF120_TO252 LP2950-3.0_TO252 LP2950-3.3_TO252 LP2950-5.0_TO252 LF47_TO252 LF90_TO252
 $FPLIST
- SOT?223*
+ TO?252*
 $ENDFPLIST
 DRAW
-S -200 -200 200 75 0 1 10 f
+S -200 75 200 -200 0 1 10 f
 X VI 1 -300 0 100 R 50 50 1 1 W
 X GND 2 0 -300 100 U 50 50 1 1 W
 X VO 3 300 0 100 L 50 50 1 1 w
@@ -146,11 +232,50 @@ X GND 9 0 -400 100 U 50 50 1 1 P N
 ENDDRAW
 ENDDEF
 #
-# Vibration_Sensor-rescue_Teensy4.0-teensy-ARTS-Lab
+# Transistor_BJT_2N2219
 #
-DEF Vibration_Sensor-rescue_Teensy4.0-teensy-ARTS-Lab U 0 40 Y Y 1 F N
+DEF Transistor_BJT_2N2219 Q 0 0 Y N 1 F N
+F0 "Q" 200 75 50 H V L CNN
+F1 "Transistor_BJT_2N2219" 200 0 50 H V L CNN
+F2 "Package_TO_SOT_THT:TO-39-3" 200 -75 50 H I L CIN
+F3 "" 0 0 50 H I L CNN
+ALIAS BC140 BC141
+$FPLIST
+ TO?39*
+$ENDFPLIST
+DRAW
+C 50 0 111 0 1 10 N
+P 2 0 1 0 25 25 100 100 N
+P 3 0 1 0 25 -25 100 -100 100 -100 N
+P 3 0 1 20 25 75 25 -75 25 -75 N
+P 5 0 1 0 50 -70 70 -50 90 -90 50 -70 50 -70 F
+X E 1 100 -200 100 U 50 50 1 1 P
+X B 2 -200 0 225 R 50 50 1 1 P
+X C 3 100 200 100 D 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# main_board-rescue_HCSR04-whs5-rescue-whs5-rescue
+#
+DEF main_board-rescue_HCSR04-whs5-rescue-whs5-rescue Ultrasonic_sensor 0 40 Y Y 1 F N
+F0 "Ultrasonic_sensor" 0 100 50 H V C CNN
+F1 "main_board-rescue_HCSR04-whs5-rescue-whs5-rescue" 0 150 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+S -300 50 250 -200 0 1 0 f
+X GND 1 -250 -300 100 U 50 50 1 1 P
+X ECHO 2 -100 -300 100 U 50 50 1 1 P
+X TRIG 3 50 -300 100 U 50 50 1 1 P
+X VCC 4 200 -300 100 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# main_board-rescue_Teensy4.0-teensy-whs5-rescue
+#
+DEF main_board-rescue_Teensy4.0-teensy-whs5-rescue U 0 40 Y Y 1 F N
 F0 "U" 0 1550 50 H V C CNN
-F1 "Vibration_Sensor-rescue_Teensy4.0-teensy-ARTS-Lab" 0 -1550 50 H V C CNN
+F1 "main_board-rescue_Teensy4.0-teensy-whs5-rescue" 0 -1550 50 H V C CNN
 F2 "" -400 200 50 H I C CNN
 F3 "" -400 200 50 H I C CNN
 DRAW
@@ -215,11 +340,25 @@ X 2_OUT2 4 -1100 1050 200 R 50 50 1 1 B
 ENDDRAW
 ENDDEF
 #
-# Vibration_Sensor-rescue_grounded_DIP_switch-ARTS-Lab
+# main_board-rescue_XP60PW-whs5-rescue-whs5-rescue
 #
-DEF Vibration_Sensor-rescue_grounded_DIP_switch-ARTS-Lab switch 0 40 Y Y 1 F N
+DEF main_board-rescue_XP60PW-whs5-rescue-whs5-rescue U 0 40 Y Y 1 F N
+F0 "U" 0 100 50 H V C CNN
+F1 "main_board-rescue_XP60PW-whs5-rescue-whs5-rescue" 0 -300 39 H V C CNN
+F2 "custom:XT60Github" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+S -200 0 200 -450 0 1 0 f
+X IN- 1 300 -100 100 L 50 50 1 1 W
+X IN+ 2 -300 -200 100 R 50 50 1 1 W
+ENDDRAW
+ENDDEF
+#
+# main_board-rescue_grounded_switch-whs5-rescue-whs5-rescue
+#
+DEF main_board-rescue_grounded_switch-whs5-rescue-whs5-rescue switch 0 40 Y Y 1 F N
 F0 "switch" 0 -100 50 H V C CNN
-F1 "Vibration_Sensor-rescue_grounded_DIP_switch-ARTS-Lab" 0 150 50 H V C CNN
+F1 "main_board-rescue_grounded_switch-whs5-rescue-whs5-rescue" 0 150 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -232,52 +371,11 @@ X ~ 5 450 -150 100 L 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
-# Vibration_Sensor-rescue_main_board_top_rail-ARTS-Lab
+# main_board-rescue_nRF24L01+-custom-whs5-rescue-whs5-rescue
 #
-DEF Vibration_Sensor-rescue_main_board_top_rail-ARTS-Lab U 0 40 Y Y 1 F N
-F0 "U" 0 200 50 H V C CNN
-F1 "Vibration_Sensor-rescue_main_board_top_rail-ARTS-Lab" 0 300 50 H V C CNN
-F2 "" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-DRAW
-S -500 0 500 -300 0 1 0 f
-X CS 1 -350 -400 100 U 50 50 1 1 I
-X PWM 10 -450 -400 100 U 50 50 1 1 P
-X MISO 2 -250 -400 100 U 50 50 1 1 I
-X MOSI 3 -150 -400 100 U 50 50 1 1 I
-X SCK 4 -50 -400 100 U 50 50 1 1 I
-X SDA 5 50 -400 100 U 50 50 1 1 I
-X SCL 6 150 -400 100 U 50 50 1 1 I
-X 5V 7 250 -400 100 U 50 50 1 1 I
-X 3.3V 8 350 -400 100 U 50 50 1 1 I
-X GND 9 450 -400 100 U 50 50 1 1 I
-ENDDRAW
-ENDDEF
-#
-# Vibration_Sensor-rescue_microSD_small-ARTS-Lab
-#
-DEF Vibration_Sensor-rescue_microSD_small-ARTS-Lab Micro_SD 0 40 Y Y 1 F N
-F0 "Micro_SD" 0 -300 50 H V C CNN
-F1 "Vibration_Sensor-rescue_microSD_small-ARTS-Lab" 0 -150 50 H V C CNN
-F2 "" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-DRAW
-P 4 0 1 0 -350 -450 -350 -700 350 -700 350 -450 f
-P 4 0 1 0 -350 -450 -350 0 350 0 350 -450 f
-X 3.3V 1 -250 -800 100 U 50 50 1 1 I
-X CS 2 -150 -800 100 U 50 50 1 1 I
-X MOSI 3 -50 -800 100 U 50 50 1 1 I
-X CLK 4 50 -800 100 U 50 50 1 1 I
-X MISO 5 150 -800 100 U 50 50 1 1 I
-X GND 6 250 -800 100 U 50 50 1 1 I
-ENDDRAW
-ENDDEF
-#
-# Vibration_Sensor-rescue_nRF24L01+-ARTS-Lab
-#
-DEF Vibration_Sensor-rescue_nRF24L01+-ARTS-Lab U 0 40 Y Y 1 F N
+DEF main_board-rescue_nRF24L01+-custom-whs5-rescue-whs5-rescue U 0 40 Y Y 1 F N
 F0 "U" 0 -500 50 H V C CNN
-F1 "Vibration_Sensor-rescue_nRF24L01+-ARTS-Lab" 50 -400 47 H V C CNN
+F1 "main_board-rescue_nRF24L01+-custom-whs5-rescue-whs5-rescue" 50 -400 47 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -293,17 +391,59 @@ X MISO 8 200 -850 100 U 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
-# Vibration_Sensor-rescue_power_input-ARTS-Lab
+# main_board-rescue_small_microSD-whs5-rescue
 #
-DEF Vibration_Sensor-rescue_power_input-ARTS-Lab U 0 40 Y Y 1 F N
-F0 "U" 0 100 50 H V C CNN
-F1 "Vibration_Sensor-rescue_power_input-ARTS-Lab" 0 -300 39 H V C CNN
-F2 "custom:XT60Github" 0 0 50 H I C CNN
+DEF main_board-rescue_small_microSD-whs5-rescue Micro_SD 0 40 Y Y 1 F N
+F0 "Micro_SD" 0 -300 50 H V C CNN
+F1 "main_board-rescue_small_microSD-whs5-rescue" 0 -150 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
-S -200 0 200 -450 0 1 0 f
-X IN- 1 300 -100 100 L 50 50 1 1 W
-X IN+ 2 -300 -200 100 R 50 50 1 1 W
+P 4 0 1 0 -350 -450 -350 -700 350 -700 350 -450 f
+P 4 0 1 0 -350 -450 -350 0 350 0 350 -450 f
+X 3.3V 1 -250 -800 100 U 50 50 1 1 I
+X CS 2 -150 -800 100 U 50 50 1 1 I
+X MOSI 3 -50 -800 100 U 50 50 1 1 I
+X CLK 4 50 -800 100 U 50 50 1 1 I
+X MISO 5 150 -800 100 U 50 50 1 1 I
+X GND 6 250 -800 100 U 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
+# main_board-rescue_tds_3pin-whs5-rescue
+#
+DEF main_board-rescue_tds_3pin-whs5-rescue TDS_3pin 0 40 Y Y 1 F N
+F0 "TDS_3pin" 0 100 50 H V C CNN
+F1 "main_board-rescue_tds_3pin-whs5-rescue" 0 200 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+S -100 0 350 -250 0 1 0 f
+X A 1 -50 -350 100 U 50 50 1 1 I
+X + 2 100 -350 100 U 50 50 1 1 O
+X - 3 250 -350 100 U 50 50 1 1 O
+ENDDRAW
+ENDDEF
+#
+# main_board-rescue_top_rail-custom-whs5-rescue-whs5-rescue
+#
+DEF main_board-rescue_top_rail-custom-whs5-rescue-whs5-rescue U 0 40 Y Y 1 F N
+F0 "U" 0 200 50 H V C CNN
+F1 "main_board-rescue_top_rail-custom-whs5-rescue-whs5-rescue" 0 300 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+S -500 0 500 -300 0 1 0 f
+X CS 1 -350 -400 100 U 50 50 1 1 I
+X PWM 10 -450 -400 100 U 50 50 1 1 P
+X MISO 2 -250 -400 100 U 50 50 1 1 I
+X MOSI 3 -150 -400 100 U 50 50 1 1 I
+X SCK 4 -50 -400 100 U 50 50 1 1 I
+X SDA 5 50 -400 100 U 50 50 1 1 I
+X SCL 6 150 -400 100 U 50 50 1 1 I
+X 5V 7 250 -400 100 U 50 50 1 1 I
+X 3.3V 8 350 -400 100 U 50 50 1 1 I
+X GND 9 450 -400 100 U 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
