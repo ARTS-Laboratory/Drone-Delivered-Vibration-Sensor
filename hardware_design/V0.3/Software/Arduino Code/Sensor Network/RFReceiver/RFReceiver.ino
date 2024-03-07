@@ -11,17 +11,17 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 
-RF24 radio(7, 8); // CE, CSN
+RF24 radio(9, 10); // CE, CSN
 
 const byte address[6] = "00001";
-const int rled = 9;
+const int rled = 13;
 
 void setup() {
   pinMode(rled, OUTPUT);
   Serial.begin(9600);
   radio.begin();
   radio.openReadingPipe(0, address);
-  radio.setPALevel(RF24_PA_MIN);
+  radio.setPALevel(RF24_PA_MAX);
   radio.startListening();
 }
 
@@ -38,11 +38,11 @@ void loop() {
     int msg = 0;
 //    radio.read(&text, sizeof(text));
     radio.read(&msg, sizeof(msg));
-    Serial.println(text);
+    // Serial.println(text);
     Serial.println(msg);
     if(msg == 1){
       digitalWrite(9, HIGH);
-      delay(500);
+      // delay(10);
     }
   }
 }
