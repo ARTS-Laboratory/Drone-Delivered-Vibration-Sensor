@@ -37,7 +37,7 @@ This work is licensed under a
 Cite as:
 
 @Misc{SatmeDroneDeliveredVibration,     
-  author = {Joud Satme and Austin Downey},  
+  author = {Joud Satme and Ryan Yount and Austin Downey},  
     howpublished = {GitHub},    
   title  = {Drone Delivered Vibration Sensor},
   groups = {{ARTS-L}ab},    
