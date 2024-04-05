@@ -338,3 +338,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+Test data/Bridge shaker FFT monitoring test/test.lvm
