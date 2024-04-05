@@ -32,7 +32,7 @@ constexpr size_t DATA_POINT = 74000;     //74295 time stamped
 
 sca3300_library::SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, sca3300_library::OperationMode::MODE3, true); // MODE#1 is 3G // MODE#3 is 1.5G
 unsigned int fileNameCount = 0;
-constexpr uint32_t Freq = 1600;
+constexpr uint32_t Freq = 400;
 constexpr uint32_t DELAY_TIME = static_cast<uint32_t>(((1.0/Freq)-.00003487893522)*1000000);
 
 void recordData(int16_t* data, uint32_t* timeStamps, uint32_t delayTime);
