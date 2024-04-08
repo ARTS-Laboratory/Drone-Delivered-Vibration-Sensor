@@ -1,4 +1,5 @@
-# Hardware Design Files
+# Brooklyn
+Designed for modal analysis using a network of sensors.
 
 
 ## Version 0.1
