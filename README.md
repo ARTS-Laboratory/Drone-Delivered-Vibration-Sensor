@@ -10,8 +10,6 @@ UAV deployable sensor package for vibration-based structural health monitoring.
 Figure 1: Video of UAV deploying a sensor package in the Rock Branch Creek at the University of South Carolina. UAV under manual control. Click the image to view the video on YouTube. 
 </p>
 
-## [Media](Media)
-Includes figures and diagrams of the drone deliverable vibration sensor.
 
 ## [System Design](System_design)
 Vibration sensor package: includes sensor package software (Arduino) and hardware (circuit) files along with package frame design.
