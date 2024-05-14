@@ -16,7 +16,6 @@ Includes figures and diagrams of the drone deliverable vibration sensor.
 ## [System Design](System_design)
 Vibration sensor package: includes sensor package software (Arduino) and hardware (circuit) files along with package frame design.
 
-
 <br /><br /><br />
 
 ## Licensing and Citation
