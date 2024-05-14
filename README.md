@@ -11,7 +11,7 @@ Figure 1: Video of UAV deploying a sensor package in the Rock Branch Creek at th
 </p>
 
 
-## [Hardware Design](hardware_design)
+## [System Design](System_design)
 Vibration sensor package: includes sensor package software (Arduino) and hardware (circuit) files along with package frame design.
 
 
