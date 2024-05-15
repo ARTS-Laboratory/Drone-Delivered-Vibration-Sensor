@@ -30,7 +30,7 @@ This work is licensed under a
 
 Cite as:
 
-@Misc{RTSLabDroneDeliveredVibration,     
+@Misc{ARTSLabDroneDeliveredVibration,     
   author = {{ARTS-L}ab},  
   howpublished = {GitHub},    
   title  = {Drone Delivered Vibration Sensor},    
