@@ -1,4 +1,4 @@
-// ARTS Lab, 2024
+// Copyright ARTS Lab, 2024
 
 #ifndef LSTM_H
 #define LSTM_H

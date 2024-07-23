@@ -1,4 +1,4 @@
-// ARTS Lab, 2024
+// Copyright ARTS Lab, 2024
 
 #include "lstm.h"
 #include "linear-algebra.h"

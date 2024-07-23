@@ -1,4 +1,4 @@
-// ARTS Lab, 2024
+// Copyright ARTS Lab, 2024
 
 #ifndef LINEAR_ALGEBRA_H
 #define LINEAR_ALGEBRA_H
