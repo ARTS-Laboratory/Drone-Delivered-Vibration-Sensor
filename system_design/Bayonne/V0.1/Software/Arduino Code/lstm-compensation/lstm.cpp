@@ -7,9 +7,20 @@ using edgeML::LSTM;
 LSTM::LSTM(int numUnits, int inputSize, float** mergedWeightMatrix,
            float* biasVector) : numUnits(numUnits), inputSize(inputSize),
                                 mergedWeightMatrix(mergedWeightMatrix), biasVector(biasVector) {
-  this->statesVector = new float[numUnits + inputSize]();
-  this->cellState = new float[numUnits]();
-  this->gates = new float[numUnits * 4]();
+  this->statesVector = new float[numUnits + inputSize];
+  this->cellState = new float[numUnits];
+  this->gates = new float[numUnits * 4];
+
+  for (int i = 0; i < inputSize; i++) {
+    this->statesVector[i] = 0;
+  }
+
+  for (int i = 0; i < numUnits; i++) {
+    this->statesVector[inputSize + i] = 0;
+    this->cellState[i] = 0;
+    this->gates[i] = this->gates[numUnits + i] = this->gates[2 * numUnits + i] =
+      this->gates[3 * numUnits + i] = 0;
+  }
 }
 
 // Forward pass
@@ -22,13 +33,12 @@ void LSTM::step(float* input, float* destination) {
   vectorMatTmultiply(statesVector, mergedWeightMatrix, biasVector, gates,
                      numUnits + inputSize, numUnits * 4);
 
-  // [i f c o]
   // Apply activation functions
   for (int i = 0; i < numUnits; i++) {
-    gates[i] = sigmoid(gates[i]);
-    gates[numUnits + i] = sigmoid(gates[numUnits + i]);
-    cellState[i] = cellState[i] * gates[numUnits + i] + gates[i] + hypertan(2 * numUnits + i);
-    gates[3 * numUnits + i] = sigmoid(gates[3 * numUnits + i]);
-    destination[i] = statesVector[inputSize + i] = gates[3 * numUnits + i] * hypertan(cellState[i]);
+    cellState[i] = cellState[i] * sigmoid(gates[numUnits + i]) +
+                   sigmoid(gates[i]) * hypertan(3 * numUnits + i);
+
+    destination[i] = statesVector[inputSize + i] =
+      sigmoid(gates[2 * numUnits + i]) * hypertan(cellState[i]);
   }
 }
