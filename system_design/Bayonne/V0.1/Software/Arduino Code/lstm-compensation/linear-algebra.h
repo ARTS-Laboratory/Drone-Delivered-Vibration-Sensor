@@ -12,10 +12,8 @@ void vectorMatTmultiply(float* vector, float** matrix,
                        float* bias, float* outputVector,
                        int vectorSize, int matrixNumRows);
 
-// Linear approximation of sigm(x)
 float sigmoid(float x);
 
-// Linear approximation of tanh(x) using sigmoid
 float hypertan(float x);
 }
 
