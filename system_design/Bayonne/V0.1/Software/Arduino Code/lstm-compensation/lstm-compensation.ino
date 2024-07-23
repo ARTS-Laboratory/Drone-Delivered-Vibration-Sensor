@@ -101,7 +101,7 @@ void writeSDConverted(int16_t* data, uint32_t* timeStamps,
                       sca3300_library::OperationMode operationMode,
                       char* fileName) {
   File dataFile = SD.open(fileName, FILE_WRITE);
-  int startTime = micros();
+  int startTime = millis();
 
   if (SD.exists(fileName)) {
 
@@ -124,7 +124,7 @@ void writeSDConverted(int16_t* data, uint32_t* timeStamps,
     dataFile.flush();
     dataFile.close();
     Serial.println("Finished writing to SD card.");
-    Serial.printf("Data processed in %d microseconds.", micros() - startTime);
+    Serial.printf("Data processed in %d ms.\n", millis() - startTime);
 
     for (int i = 0; i <= 5; i++) {
       digitalWrite(LED_PIN, HIGH);
@@ -133,6 +133,6 @@ void writeSDConverted(int16_t* data, uint32_t* timeStamps,
       delay(200);
     }
   } else {
-    Serial.printf("Unable to create %c.", fileName);
+    Serial.printf("Unable to create %c.\n", fileName);
   }
 }
