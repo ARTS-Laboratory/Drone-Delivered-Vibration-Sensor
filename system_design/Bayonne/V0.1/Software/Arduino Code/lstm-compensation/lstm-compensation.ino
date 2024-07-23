@@ -68,6 +68,12 @@ void setup() {
   Serial.println(1/((DELAY_TIME*.000001)+.00003487893522));
   Serial.print("Test length (s):");
   Serial.println(DATA_POINTS*((DELAY_TIME*.000001)+.00003487893522));
+
+  // Let the accelerometer run for a while. This is a hotfix for a bug
+  // in the driver.
+  for (int i = 0; i < 10000; i++) {
+    sca3300.getAccelRaw(sca3300_library::Axis::Z);
+  }
 }
 
 void loop() {
