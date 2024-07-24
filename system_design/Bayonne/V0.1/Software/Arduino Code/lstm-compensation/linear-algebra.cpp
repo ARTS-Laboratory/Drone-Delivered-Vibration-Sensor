@@ -26,5 +26,5 @@ float edgeML::sigmoid(float x) {
 }
 
 float edgeML::hypertan(float x) {
-  return 2 * sigmoid(x) - 1;
+  return 2 * sigmoid(2 * x) - 1;
 }
