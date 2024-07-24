@@ -113,7 +113,7 @@ void writeSDConverted(int16_t* data, uint32_t* timeStamps,
 
     for (size_t i = 0; i < DATA_POINTS; ++i) {
       float convertedData =
-        SCA3300::convertRawAccelToAccel(data[i], operationMode);
+        SCA3300::convertRawAccelToAccel(data[i], operationMode) - 1;
 
       // Record raw data
       dataFile.print(String((timeStamps[i]-timeStamps[0])*.000001, 10));
