@@ -27,9 +27,9 @@ const uint8_t TRIG_PIN = 2;
 constexpr uint32_t SPI_SPEED = 2000000;
 constexpr size_t DATA_POINTS = 16384;
 
-constexpr uint32_t Freq = 1600;  // Sampling rate of the accelerometer in Hz
+constexpr uint32_t FREQUENCY = 1600;  // Sampling rate of the accelerometer (Hz)
 constexpr uint32_t DELAY_TIME =
-  static_cast<uint32_t>(((1.0/Freq)-.00003487893522)*1000000);
+  static_cast<uint32_t>(((1.0 / FREQUENCY) * 1000000);  // Period (us)
 
 SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, OperationMode::MODE3, true);
 int16_t data[DATA_POINTS];
@@ -93,11 +93,16 @@ void loop() {
 }
 
 void recordData(int16_t* data, uint32_t delayTime) {
+  uint32_t endTime;
   Serial.println("Start Recording");
  
   for (size_t i = 0; i < DATA_POINTS; ++i) {
+    endTime = micros() + delayTime;
     data[i] = sca3300.getAccelRaw(sca3300_library::Axis::Z);
-    delayMicroseconds(delayTime);
+
+    while (micros() < endTime) {
+      // Do nothing
+    }
   }
 
   Serial.println("Finish Recording");
