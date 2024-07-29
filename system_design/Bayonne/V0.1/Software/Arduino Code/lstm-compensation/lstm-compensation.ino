@@ -80,30 +80,28 @@ void loop() {
   trig = 1; // Replace with digitalRead(TRIG_PIN); for actual trigger
   if (trig == 1) {
     int16_t data[DATA_POINTS];
-    uint32_t timeStamps[DATA_POINTS];
     digitalWrite(LED_PIN, HIGH);
-    recordData(data, timeStamps, DELAY_TIME);
+    recordData(data, DELAY_TIME);
     char fileName[13];
     sprintf(fileName, "DATA%03d.csv", fileNameCount);
-    writeSDConverted(data, timeStamps, sca3300.getOperationMode(), fileName);
+    writeSDConverted(data, sca3300.getOperationMode(), fileName);
   
     delay(2000);
   }
 }
 
-void recordData(int16_t* data, uint32_t* timeStamps, uint32_t delayTime) {
+void recordData(int16_t* data, uint32_t delayTime) {
   Serial.println("Start Recording");
  
   for (size_t i = 0; i < DATA_POINTS; ++i) {
     data[i] = sca3300.getAccelRaw(sca3300_library::Axis::Z);
-    timeStamps[i] = micros();
     delayMicroseconds(delayTime);
   }
 
   Serial.println("Finish Recording");
 }
 
-void writeSDConverted(int16_t* data, uint32_t* timeStamps,
+void writeSDConverted(int16_t* data,
                       sca3300_library::OperationMode operationMode,
                       char* fileName) {
   File dataFile = SD.open(fileName, FILE_WRITE);
@@ -116,8 +114,6 @@ void writeSDConverted(int16_t* data, uint32_t* timeStamps,
         SCA3300::convertRawAccelToAccel(data[i], operationMode) - 1;
 
       // Record raw data
-      dataFile.print(String((timeStamps[i]-timeStamps[0])*.000001, 10));
-      dataFile.print(",");
       dataFile.print(convertedData, 7);
       dataFile.print(",");
 
