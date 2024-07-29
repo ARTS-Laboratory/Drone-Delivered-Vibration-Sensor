@@ -32,6 +32,8 @@ constexpr uint32_t DELAY_TIME =
   static_cast<uint32_t>(((1.0/Freq)-.00003487893522)*1000000);
 
 SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, OperationMode::MODE3, true);
+int16_t data[DATA_POINTS];
+
 
 LSTM* lstm;
 float lstmOutput[NUMUNITS];
@@ -78,8 +80,8 @@ void setup() {
 
 void loop() {
   trig = 1; // Replace with digitalRead(TRIG_PIN); for actual trigger
+
   if (trig == 1) {
-    int16_t data[DATA_POINTS];
     digitalWrite(LED_PIN, HIGH);
     recordData(data, DELAY_TIME);
     char fileName[13];
