@@ -12,6 +12,9 @@ class LSTM {
   // LSTM forward pass
   void step(float* input, float* destination);
 
+  // Set h and c to 0's
+  void resetState();
+
  private:
   int numUnits;
   int inputSize;

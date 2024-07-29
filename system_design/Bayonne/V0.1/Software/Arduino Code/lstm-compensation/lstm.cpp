@@ -31,3 +31,10 @@ void LSTM::step(float* input, float* destination) {
       sigmoid(gates[3 * numUnits + i]) * hypertan(cellState[i]);
   }
 }
+
+void LSTM::resetState() {
+  for (int i = 0; i < numUnits; i++) {
+    cellState[i] = 0;
+    statesVector[inputSize + i] = 0;
+  }
+}
