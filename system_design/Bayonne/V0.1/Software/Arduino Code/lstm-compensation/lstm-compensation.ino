@@ -87,7 +87,8 @@ void loop() {
     char fileName[13];
     sprintf(fileName, "DATA%03d.csv", fileNameCount);
     writeSDConverted(data, sca3300.getOperationMode(), fileName);
-  
+
+    lstm.resetState();
     delay(2000);
   }
 }
