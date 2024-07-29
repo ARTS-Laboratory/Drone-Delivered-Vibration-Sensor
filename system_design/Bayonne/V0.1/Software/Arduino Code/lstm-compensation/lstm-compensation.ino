@@ -122,8 +122,7 @@ void writeSDConverted(int16_t* data, uint32_t* timeStamps,
       dataFile.print(",");
 
       // Run inference
-      lstm->step(&convertedData, lstmOutput);
-      dataFile.println(dotProduct(lstmOutput, denseW, NUMUNITS) + denseB, 7);
+      dataFile.println(runInference(&convertedData), 7);
     }
 
     ++fileNameCount;
@@ -141,4 +140,9 @@ void writeSDConverted(int16_t* data, uint32_t* timeStamps,
   } else {
     Serial.printf("Unable to create %c.\n", fileName);
   }
+}
+
+float runInference(float* input) {
+    lstm->step(&convertedData, lstmOutput);
+    return dotProduct(lstmOutput, denseW, NUMUNITS) + denseB;
 }
