@@ -94,7 +94,7 @@ void loop() {
 }
 
 void recordData(int16_t* data, uint32_t delayTime) {
-  uint32_t endTime;
+  unsigned long endTime;
   Serial.println("Start Recording");
  
   for (size_t i = 0; i < DATA_POINTS; ++i) {
@@ -113,7 +113,7 @@ void writeSDConverted(int16_t* data,
                       sca3300_library::OperationMode operationMode,
                       char* fileName) {
   File dataFile = SD.open(fileName, FILE_WRITE);
-  int startTime = millis();
+  unsigned long startTime = millis();
 
   if (SD.exists(fileName)) {
 
