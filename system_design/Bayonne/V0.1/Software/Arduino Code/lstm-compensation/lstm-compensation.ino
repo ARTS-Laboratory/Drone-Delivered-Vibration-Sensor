@@ -16,13 +16,11 @@ using sca3300_library::OperationMode;
 
 
 File myFile;
-boolean trig = 0;
 unsigned int fileNameCount = 0;
 
 const uint8_t LED_PIN = 3;  // Indicator LED pin
 const uint8_t SCA3300_CHIP_SELECT = 1;  // Current PCB Chip Select
 const uint8_t SD_CHIP_SELECT = 4;  // PCB Chip Select
-const uint8_t TRIG_PIN = 2;
 
 constexpr uint32_t SPI_SPEED = 2000000;
 constexpr size_t DATA_POINTS = 16384;
