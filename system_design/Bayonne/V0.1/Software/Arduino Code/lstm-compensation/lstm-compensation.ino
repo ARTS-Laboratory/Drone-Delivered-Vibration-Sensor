@@ -79,18 +79,14 @@ void setup() {
 }
 
 void loop() {
-  trig = 1; // Replace with digitalRead(TRIG_PIN); for actual trigger
+  digitalWrite(LED_PIN, HIGH);
+  recordData(data, DELAY_TIME);
+  char fileName[13];
+  sprintf(fileName, "DATA%03d.csv", fileNameCount);
+  writeSDConverted(data, sca3300.getOperationMode(), fileName);
 
-  if (trig == 1) {
-    digitalWrite(LED_PIN, HIGH);
-    recordData(data, DELAY_TIME);
-    char fileName[13];
-    sprintf(fileName, "DATA%03d.csv", fileNameCount);
-    writeSDConverted(data, sca3300.getOperationMode(), fileName);
-
-    lstm.resetState();
-    delay(2000);
-  }
+  lstm.resetState();
+  delay(2000);
 }
 
 void recordData(int16_t* data, uint32_t delayTime) {
