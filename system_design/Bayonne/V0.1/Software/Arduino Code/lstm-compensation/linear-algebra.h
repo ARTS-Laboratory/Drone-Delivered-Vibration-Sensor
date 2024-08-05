@@ -15,6 +15,6 @@ void vectorMatTmultiply(float* vector, float** matrix,
 float sigmoid(float x);
 
 float hypertan(float x);
-}
+}  // namespace edgeML
 
-#endif  //LINEAR_ALGEBRA_H
+#endif  // LINEAR_ALGEBRA_H

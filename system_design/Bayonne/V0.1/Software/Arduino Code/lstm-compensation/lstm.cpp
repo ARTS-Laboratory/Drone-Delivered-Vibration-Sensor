@@ -6,7 +6,8 @@ using edgeML::LSTM;
 
 LSTM::LSTM(int numUnits, int inputSize, float** mergedWeightMatrix,
            float* biasVector) : numUnits(numUnits), inputSize(inputSize),
-                                mergedWeightMatrix(mergedWeightMatrix), biasVector(biasVector) {
+                                mergedWeightMatrix(mergedWeightMatrix),
+                                biasVector(biasVector) {
   this->statesVector = new float[numUnits + inputSize]();
   this->cellState = new float[numUnits]();
   this->gates = new float[numUnits * 4]();

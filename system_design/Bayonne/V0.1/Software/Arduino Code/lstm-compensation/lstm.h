@@ -22,10 +22,10 @@ class LSTM {
   float** mergedWeightMatrix;
   float* biasVector;
 
-  float* statesVector; // Merged input and hidden vectors
+  float* statesVector;  // Merged input and hidden vectors
   float* cellState;
   float* gates;
 };
-}
+}  // namespace edgeML
 
 #endif  // !LSTM_H

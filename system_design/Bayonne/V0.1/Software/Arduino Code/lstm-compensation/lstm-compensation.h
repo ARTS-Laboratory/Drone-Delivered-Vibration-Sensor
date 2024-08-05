@@ -19,4 +19,4 @@ void printDataConverted(int16_t* data, uint32_t* timeStamps,
 
 float runInference(float* input);
 
-#endif
+#endif  // LSTM_COMPENSATION_H
