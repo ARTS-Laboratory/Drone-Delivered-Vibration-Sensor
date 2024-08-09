@@ -23,7 +23,7 @@ const uint8_t SCA3300_CHIP_SELECT = 1;  // Current PCB Chip Select
 const uint8_t SD_CHIP_SELECT = 4;  // PCB Chip Select
 
 constexpr uint32_t SPI_SPEED = 2000000;
-constexpr size_t DATA_POINTS = 16384;
+constexpr size_t DATA_POINTS = 20000;
 
 constexpr uint32_t FREQUENCY = 1600;  // Sampling rate of the accelerometer (Hz)
 constexpr uint32_t DELAY_TIME =
