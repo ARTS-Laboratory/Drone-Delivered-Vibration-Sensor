@@ -13,13 +13,28 @@ def main():
     input_size = 1
     numUnits = 50
 
-    lstm_w = arr_2D_to_C(np.loadtxt(lstm_dir + "mergedW.csv", delimiter=','))
-    lstm_b = arr_1D_to_C(np.loadtxt(lstm_dir + "b.csv", delimiter=','))
+    try:
+        lstm_w = arr_2D_to_C(
+            np.loadtxt(lstm_dir + "mergedW.csv", delimiter=',')
+        )
 
-    dense_w = arr_1D_to_C(np.loadtxt(dense_dir + "weights.csv", delimiter=','))
+        lstm_b = arr_1D_to_C(
+            np.loadtxt(lstm_dir + "b.csv", delimiter=',')
+        )
 
-    with open(dense_dir + 'bias.csv') as file:
-        dense_b = file.read().strip('\n')
+        dense_w = arr_1D_to_C(
+            np.loadtxt(dense_dir + "weights.csv", delimiter=',')
+        )
+
+        with open(dense_dir + 'bias.csv') as file:
+            dense_b = file.read().strip('\n')
+
+    except Exception:
+        print(
+            'One or more weight files cannot be found. Please ensure this is '
+            'being run in the Software/ directory and all weight files are'
+            'present.'
+        )
 
     file_contents = f"""
 // LSTM model header file
