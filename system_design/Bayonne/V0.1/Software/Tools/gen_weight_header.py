@@ -36,7 +36,7 @@ float denseB = {dense_b};
 
 #endif  // MODELWEIGHTS
 """
-    with open('Arduino/test.h', 'w') as file:
+    with open('Arduino/model-weights.h', 'w') as file:
         file.write(file_contents)
 
 
