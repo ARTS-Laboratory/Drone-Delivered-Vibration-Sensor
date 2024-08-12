@@ -1,3 +1,4 @@
+# Copyright ARTS Lab, 2024
 # Generates a header file with the weights for the model
 
 # Run this script in the Software/ directory, and make sure the model is
