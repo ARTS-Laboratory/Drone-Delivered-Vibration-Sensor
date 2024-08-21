@@ -4,10 +4,8 @@
 #define LSTM_COMPENSATION_H
 
 #include <SCA3300.h>
-#include "lstm.h"
 
 using sca3300_library::OperationMode;
-using edgeML::LSTM;
 
 void recordData(int16_t* data, uint32_t* timeStamps, uint32_t delayTime);
 
