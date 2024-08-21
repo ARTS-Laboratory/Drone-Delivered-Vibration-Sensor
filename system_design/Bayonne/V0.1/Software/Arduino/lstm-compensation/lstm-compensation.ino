@@ -27,7 +27,7 @@ constexpr size_t DATA_POINTS = 20000;
 
 constexpr uint32_t FREQUENCY = 1600;  // Sampling rate of the accelerometer (Hz)
 constexpr uint32_t DELAY_TIME =
-  static_cast<uint32_t>(((1.0 / FREQUENCY) * 1000000);  // Period (us)
+  static_cast<uint32_t>(((1.0 / FREQUENCY) * 1000000));  // Period (us)
 
 SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, OperationMode::MODE3, true);
 int16_t data[DATA_POINTS];
@@ -40,7 +40,6 @@ void setup() {
   delay(5000);
 
   Serial.begin(9600);
-  pinMode(TRIG_PIN, INPUT);
   pinMode(LED_PIN, OUTPUT);
 
   // Generate pointers to the lstm weight matrix
@@ -83,7 +82,7 @@ void loop() {
   sprintf(fileName, "DATA%03d.csv", fileNameCount);
   writeSDConverted(data, sca3300.getOperationMode(), fileName);
 
-  lstm.resetState();
+  lstm->resetState();
   delay(2000);
 }
 
@@ -141,6 +140,6 @@ void writeSDConverted(int16_t* data,
 }
 
 float runInference(float* input) {
-    lstm->step(&convertedData, lstmOutput);
+    lstm->step(input, lstmOutput);
     return dotProduct(lstmOutput, denseW, NUMUNITS) + denseB;
 }
