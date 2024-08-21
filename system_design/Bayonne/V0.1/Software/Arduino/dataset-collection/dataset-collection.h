@@ -7,12 +7,10 @@
 
 using sca3300_library::OperationMode;
 
-void recordData(int16_t* data, uint32_t* timeStamps, uint32_t delayTime);
+void recordData(int16_t* data, uint32_t delayTime);
 
-void writeSDConverted(int16_t* data, uint32_t* timeStamps,
-                      OperationMode operationMode, char* fileName);
+void writeSDConverted(int16_t* data, OperationMode operationMode, char* fileName);
 
-void printDataConverted(int16_t* data, uint32_t* timeStamps,
-                        OperationMode operationMode);
+void printDataConverted(int16_t* data, OperationMode operationMode);
 
 #endif  // LSTM_COMPENSATION_H
