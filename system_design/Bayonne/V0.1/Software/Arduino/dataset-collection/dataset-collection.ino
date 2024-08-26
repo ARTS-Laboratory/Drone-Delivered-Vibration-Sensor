@@ -16,6 +16,7 @@ unsigned int fileNameCount = 0;
 const uint8_t LED_PIN = 3;  // Indicator LED pin
 const uint8_t SCA3300_CHIP_SELECT = 1;  // Current PCB Chip Select
 const uint8_t SD_CHIP_SELECT = 4;  // PCB Chip Select
+const uint8_t TRIGGER_PIN = 2;
 
 constexpr uint32_t SPI_SPEED = 2000000;
 constexpr size_t DATA_POINTS = 20000;
@@ -58,13 +59,15 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(LED_PIN, HIGH);
-  recordData(data, DELAY_TIME);
-  char fileName[13];
-  sprintf(fileName, "DATA%03d.csv", fileNameCount);
-  writeSDConverted(data, sca3300.getOperationMode(), fileName);
+  if (digitalRead(TRIGGER_PIN)) {
+    digitalWrite(LED_PIN, HIGH);
+    recordData(data, DELAY_TIME);
+    char fileName[13];
+    sprintf(fileName, "DATA%03d.csv", fileNameCount);
+    writeSDConverted(data, sca3300.getOperationMode(), fileName);
 
-  delay(2000);
+    delay(2000);
+  }
 }
 
 void recordData(int16_t* data, uint32_t delayTime) {
