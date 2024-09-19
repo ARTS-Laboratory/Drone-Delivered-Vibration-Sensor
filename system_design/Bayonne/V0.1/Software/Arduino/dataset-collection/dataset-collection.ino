@@ -27,6 +27,7 @@ constexpr uint32_t DELAY_TIME =
 
 SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, OperationMode::MODE3, true);
 int16_t data[DATA_POINTS];
+unsigned long timestamps[DATA_POINTS];
 
 
 void setup() {
@@ -73,11 +74,19 @@ void loop() {
 
 void recordData(int16_t* data, uint32_t delayTime) {
   unsigned long endTime;
+  unsigned long leftSide;
+  unsigned long rightSide;
+
   Serial.println("Start Recording");
  
   for (size_t i = 0; i < DATA_POINTS; ++i) {
     endTime = micros() + delayTime;
+
+    leftSide = micros();
     data[i] = sca3300.getAccelRaw(sca3300_library::Axis::Z);
+    rightSide = micros();
+
+    timestamps[i] = (leftSide + rightSide) / 2;
 
     while (micros() < endTime) {
       // Do nothing
@@ -100,6 +109,8 @@ void writeSDConverted(int16_t* data,
         SCA3300::convertRawAccelToAccel(data[i], operationMode) - 1;
 
       // Record raw data
+      dataFile.print(timestamps[i]);
+      dataFile.print(',');
       dataFile.println(convertedData);
     }
 
