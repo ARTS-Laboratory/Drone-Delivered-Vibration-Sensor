@@ -111,7 +111,8 @@ void writeSDConverted(int16_t* data,
       // Record raw data
       dataFile.print(timestamps[i]);
       dataFile.print(',');
-      dataFile.println(convertedData);
+      dataFile.print(convertedData, 32);
+      dataFile.println();
     }
 
     ++fileNameCount;
