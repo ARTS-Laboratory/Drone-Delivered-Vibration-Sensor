@@ -8,11 +8,14 @@
 #include <SCA3300.h>
 #include <SD.h>
 #include <SPI.h>
+#include "interpolation.h"
 
 using edgeML::LSTM;
 using edgeML::dotProduct;
 using sca3300_library::SCA3300;
 using sca3300_library::OperationMode;
+using sca3300_library::Axis;
+using interpolation::interpolation;
 
 
 File myFile;
@@ -30,7 +33,7 @@ constexpr uint32_t DELAY_TIME =
   static_cast<uint32_t>(((1.0 / FREQUENCY) * 1000000));  // Period (us)
 
 SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, OperationMode::MODE3, true);
-int16_t data[DATA_POINTS];
+float data[DATA_POINTS];
 unsigned long timestamps[DATA_POINTS];
 
 
@@ -72,7 +75,7 @@ void setup() {
   // Let the accelerometer run for a while. This is a hotfix for a bug
   // in the driver.
   for (int i = 0; i < 10000; i++) {
-    sca3300.getAccelRaw(sca3300_library::Axis::Z);
+    sca3300.getAccelRaw(Axis::Z);
   }
 }
 
@@ -81,7 +84,7 @@ void loop() {
   recordData(data, DELAY_TIME);
   char fileName[13];
   sprintf(fileName, "DATA%03d.csv", fileNameCount);
-  writeSDConverted(data, sca3300.getOperationMode(), fileName);
+  writeSDConverted(data, fileName);
 
   lstm->resetState();
   delay(2000);
@@ -98,7 +101,9 @@ void recordData(int16_t* data, uint32_t delayTime) {
     endTime = micros() + delayTime;
 
     leftSide = micros();
-    data[i] = sca3300.getAccelRaw(sca3300_library::Axis::Z);
+    data[i] = SCA3300::convertRawAccelToAccel(sca3300.getAccelRaw(Axis::Z),
+                                              operationMode);
+
     rightSide = micros();
 
     timestamps[i] = (leftSide + rightSide) / 2;
@@ -112,16 +117,16 @@ void recordData(int16_t* data, uint32_t delayTime) {
 }
 
 void writeSDConverted(int16_t* data,
-                      sca3300_library::OperationMode operationMode,
                       char* fileName) {
   File dataFile = SD.open(fileName, FILE_WRITE);
   unsigned long startTime = millis();
+  float convertedData = DATA_POINTS[0]
 
   if (SD.exists(fileName)) {
 
-    for (size_t i = 0; i < DATA_POINTS; ++i) {
-      float convertedData =
-        SCA3300::convertRawAccelToAccel(data[i], operationMode) - 1;
+    for (size_t i = 1; i < DATA_POINTS; ++i) {
+      // float convertedData 
+      //   SCA3300::convertRawAccelToAccel(data[i], operationMode) - 1;
 
       // Record raw data
       dataFile.print(timestamps[i]);
@@ -131,6 +136,10 @@ void writeSDConverted(int16_t* data,
 
       // Run inference
       dataFile.println(runInference(&convertedData), 32);
+
+      convertedData = interpolation(timestamps[i - 1], data[i - 1],
+                                    timestamps[i], data[i],
+                                    timestamps[0] + DELAY_TIME * i);
     }
 
     ++fileNameCount;
