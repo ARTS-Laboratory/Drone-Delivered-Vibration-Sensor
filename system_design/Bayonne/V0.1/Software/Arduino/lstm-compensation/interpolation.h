@@ -4,7 +4,7 @@
 #define INTERPOLATION
 
 namespace interpolation {
-float interpolateLinear(float x0, float x1, float y0, float y1, float target);
+float interpolateLinear(float x0, float y0, float x1, float y1, float target);
 }
 
 #endif  // !INTERPOLATION
