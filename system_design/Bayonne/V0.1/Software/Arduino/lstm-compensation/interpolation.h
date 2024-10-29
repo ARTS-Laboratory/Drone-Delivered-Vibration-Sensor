@@ -4,8 +4,7 @@
 #define INTERPOLATION
 
 namespace interpolation {
-void interpolateLinear(float* xValues, float* yValues, float* destination,
-                       int length, float period);
+float interpolateLinear(float x0, float x1, float y0, float y1, float target);
 }
 
 #endif  // !INTERPOLATION
