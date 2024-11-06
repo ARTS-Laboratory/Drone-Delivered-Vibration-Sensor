@@ -9,9 +9,9 @@
 using sca3300_library::OperationMode;
 using edgeML::LSTM;
 
-void recordData(int16_t* data, uint32_t delayTime);
+void recordData(float* data, uint32_t delayTime);
 
-void writeSDConverted(int16_t* data, OperationMode operationMode, char* fileName);
+void writeSDConverted(float* data, char* fileName);
 
 void printDataConverted(int16_t* data, OperationMode operationMode);
 

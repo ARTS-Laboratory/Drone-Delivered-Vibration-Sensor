@@ -15,7 +15,7 @@ using edgeML::dotProduct;
 using sca3300_library::SCA3300;
 using sca3300_library::OperationMode;
 using sca3300_library::Axis;
-using interpolation::interpolation;
+using interpolation::interpolateLinear;
 
 
 File myFile;
@@ -90,7 +90,7 @@ void loop() {
   delay(2000);
 }
 
-void recordData(int16_t* data, uint32_t delayTime) {
+void recordData(float* data, uint32_t delayTime) {
   unsigned long endTime;
   unsigned long leftSide;
   unsigned long rightSide;
@@ -102,7 +102,7 @@ void recordData(int16_t* data, uint32_t delayTime) {
 
     leftSide = micros();
     data[i] = SCA3300::convertRawAccelToAccel(sca3300.getAccelRaw(Axis::Z),
-                                              operationMode);
+                                              sca3300.getOperationMode());
 
     rightSide = micros();
 
@@ -116,11 +116,11 @@ void recordData(int16_t* data, uint32_t delayTime) {
   Serial.println("Finish Recording");
 }
 
-void writeSDConverted(int16_t* data,
+void writeSDConverted(float* data,
                       char* fileName) {
   File dataFile = SD.open(fileName, FILE_WRITE);
   unsigned long startTime = millis();
-  float convertedData = DATA_POINTS[0]
+  float convertedData = data[0];
 
   if (SD.exists(fileName)) {
 
@@ -137,9 +137,9 @@ void writeSDConverted(int16_t* data,
       // Run inference
       dataFile.println(runInference(&convertedData), 32);
 
-      convertedData = interpolation(timestamps[i - 1], data[i - 1],
-                                    timestamps[i], data[i],
-                                    timestamps[0] + DELAY_TIME * i);
+      convertedData = interpolateLinear(timestamps[i - 1], data[i - 1],
+                                        timestamps[i], data[i],
+                                        timestamps[0] + DELAY_TIME * i);
     }
 
     ++fileNameCount;
