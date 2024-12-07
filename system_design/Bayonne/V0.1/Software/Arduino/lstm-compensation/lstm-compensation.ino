@@ -8,14 +8,12 @@
 #include <SCA3300.h>
 #include <SD.h>
 #include <SPI.h>
-#include "interpolation.h"
 
 using edgeML::LSTM;
 using edgeML::dotProduct;
 using sca3300_library::SCA3300;
 using sca3300_library::OperationMode;
 using sca3300_library::Axis;
-using interpolation::interpolateLinear;
 
 
 File myFile;
@@ -28,14 +26,12 @@ const uint8_t SD_CHIP_SELECT = 4;  // PCB Chip Select
 constexpr uint32_t SPI_SPEED = 2000000;
 constexpr size_t DATA_POINTS = 20000;
 
-constexpr uint32_t FREQUENCY = 1600;  // Sampling rate of the accelerometer (Hz)
+constexpr uint32_t FREQUENCY = 400;  // Sampling rate of the accelerometer (Hz)
 constexpr uint32_t DELAY_TIME =
   static_cast<uint32_t>(((1.0 / FREQUENCY) * 1000000));  // Period (us)
 
 SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, OperationMode::MODE3, true);
 float data[DATA_POINTS];
-unsigned long timestamps[DATA_POINTS];
-
 
 LSTM* lstm;
 float lstmOutput[NUMUNITS];
@@ -92,21 +88,14 @@ void loop() {
 
 void recordData(float* data, uint32_t delayTime) {
   unsigned long endTime;
-  unsigned long leftSide;
-  unsigned long rightSide;
 
   Serial.println("Start Recording");
  
   for (size_t i = 0; i < DATA_POINTS; ++i) {
     endTime = micros() + delayTime;
 
-    leftSide = micros();
     data[i] = SCA3300::convertRawAccelToAccel(sca3300.getAccelRaw(Axis::Z),
                                               sca3300.getOperationMode());
-
-    rightSide = micros();
-
-    timestamps[i] = (leftSide + rightSide) / 2;
 
     while (micros() < endTime) {
       // Do nothing
@@ -125,21 +114,12 @@ void writeSDConverted(float* data,
   if (SD.exists(fileName)) {
 
     for (size_t i = 1; i < DATA_POINTS; ++i) {
-      // float convertedData 
-      //   SCA3300::convertRawAccelToAccel(data[i], operationMode) - 1;
-
       // Record raw data
-      dataFile.print(timestamps[i]);
-      dataFile.print(",");
       dataFile.print(convertedData, 32);
       dataFile.print(",");
 
       // Run inference
       dataFile.println(runInference(&convertedData), 32);
-
-      convertedData = interpolateLinear(timestamps[i - 1], data[i - 1],
-                                        timestamps[i], data[i],
-                                        timestamps[0] + DELAY_TIME * i);
     }
 
     ++fileNameCount;
