@@ -38,3 +38,9 @@ Cite as:
   url    = {https://github.com/ARTS-Laboratory/Drone-Delivered-Vibration-Sensor},   
 }
 
+<p align="center">
+<img src="media/QR-code.png" alt="drawing" width="200"/>
+</p>
+<p align="center">
+QR code for repo.
+</p>
