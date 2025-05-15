@@ -1,4 +1,4 @@
-// Copyright ARTS Lab, 2024
+// Copyright ARTS Lab, 2025
 // Dataset collection for training signal compensation models
 
 #include "dataset-collection.h"
@@ -33,7 +33,7 @@ void setup() {
 
   Serial.begin(9600);
   pinMode(LED_PIN, OUTPUT);
-  pinMode(TRIGGER_PIN, OUTPUT);
+  pinMode(TRIGGER_PIN, INPUT);
 
 
   Serial.println("Initializing SD card...");
@@ -59,7 +59,12 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(TRIGGER_PIN, HIGH);
+
+  // Wait for trigger to record data
+  while (!digitarRead(TRIGGER_PIN)) {
+    // Do nothing
+  }
+
   digitalWrite(LED_PIN, HIGH);
   recordData(data, DELAY_TIME);
   digitalWrite(TRIGGER_PIN, LOW);
@@ -96,7 +101,6 @@ void writeSDConverted(int16_t* data,
   unsigned long startTime = millis();
 
   if (SD.exists(fileName)) {
-
     for (size_t i = 0; i < DATA_POINTS; ++i) {
       float convertedData =
         SCA3300::convertRawAccelToAccel(data[i], operationMode) - 1;
