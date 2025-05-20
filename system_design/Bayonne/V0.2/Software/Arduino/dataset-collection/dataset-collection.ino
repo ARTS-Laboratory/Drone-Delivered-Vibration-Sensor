@@ -61,13 +61,12 @@ void setup() {
 void loop() {
 
   // Wait for trigger to record data
-  while (!digitarRead(TRIGGER_PIN)) {
+  while (digitalRead(TRIGGER_PIN) == LOW) {
     // Do nothing
   }
 
   digitalWrite(LED_PIN, HIGH);
   recordData(data, DELAY_TIME);
-  digitalWrite(TRIGGER_PIN, LOW);
   char fileName[13];
   sprintf(fileName, "DATA%03d.csv", fileNameCount);
   writeSDConverted(data, sca3300.getOperationMode(), fileName);
