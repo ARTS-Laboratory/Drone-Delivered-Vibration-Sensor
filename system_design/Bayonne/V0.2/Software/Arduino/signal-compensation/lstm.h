@@ -6,12 +6,12 @@
 // This LSTM expects U and W to be concatenated, then flattened.
 class LSTM {
  public:
-  LSTM(int numUnits, int inputSize, float* wI,
-       float* wF, float* wC, float* wO, float* bias);
+   LSTM(int numUnits, int inputSize, float* wI, float* wF, float* wC, float* wO,
+        float* bI, float* bF, float* bC, float* bO);
 
-  void step(float* destination, float* input);
+   void step(float *destination, float *input);
 
-  void reset();
+   void reset();
 
  private:
   int numUnits, inputSize;
