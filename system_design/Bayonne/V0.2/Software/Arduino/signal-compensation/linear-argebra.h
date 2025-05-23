@@ -6,7 +6,7 @@
 float dot(float* v1, float* v2, int length);
 
 // Computes the matrix-vector product and writes the result to an array.
-void matvec(float* output, float* matrix, float* vector, int n, int m);
+void matvec(float* output, float* matrix, float* vector, int m, int n);
 
 float sigmoid(float x);
 

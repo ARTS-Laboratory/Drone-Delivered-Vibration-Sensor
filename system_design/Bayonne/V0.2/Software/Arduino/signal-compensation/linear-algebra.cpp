@@ -14,7 +14,7 @@ float dot(float* v1, float* v2, int length) {
 }
 
 
-void matvec(float* output, float* matrix, float* vector, int n, int m) {
+void matvec(float* output, float* matrix, float* vector, int m, int n) {
   int offset;
 
   for (int i = 0; i < n; i++) {
