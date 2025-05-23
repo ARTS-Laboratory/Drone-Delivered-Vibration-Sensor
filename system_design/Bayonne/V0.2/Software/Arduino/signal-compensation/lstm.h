@@ -20,13 +20,17 @@ class LSTM {
   float* wF;
   float* wC;
   float* wO;
-  float* bias;
 
   float* iGate;
   float* fGate;
   float* cGate;
   float* oGate;
   float* cCandidate;
+
+  float* bI;
+  float* bF;
+  float* bC;
+  float* bO;
 
   float* states; // [x h_t-1]
 };
