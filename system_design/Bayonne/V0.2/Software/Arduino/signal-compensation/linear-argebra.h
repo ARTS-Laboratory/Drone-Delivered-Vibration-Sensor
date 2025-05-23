@@ -10,6 +10,6 @@ void matvec(float* output, float* matrix, float* vector, int m, int n);
 
 float sigmoid(float x);
 
-float hypertan9(float x);
+float hypertan(float x);
 
 #endif  // LINEAR_ALGEBRA_H
