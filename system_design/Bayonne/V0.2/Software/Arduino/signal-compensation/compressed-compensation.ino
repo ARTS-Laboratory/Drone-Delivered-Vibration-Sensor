@@ -35,8 +35,21 @@ float data[DATA_POINTS];
 
 LSTM* lstm;
 float lstmOutput[NUMUNITS];
-float weights[(NUMUNITS + INPUTSIZE) * 4];
-float biases[NUMUNITS * 4];
+
+float lstmWeights[(NUMUNITS + INPUTSIZE) * 4];
+float lstmBiases[NUMUNITS * 4];
+float denseW[NUMUNITS];
+float denseB;
+
+float* wI;
+float* wF;
+float* wC;
+float* wO;
+float* bI;
+float* bF;
+float* bC;
+float* bO;
+
 
 void setup() {
   delay(5000);
@@ -52,7 +65,6 @@ void setup() {
     lstmWeightMatrix[i] = lstmW[i];
   }
 
-  lstm = new LSTM(NUMUNITS, INPUTSIZE, lstmWeightMatrix, lstmB);
   Serial.println("Model loaded.");
 
   Serial.println("Initializing SD card...");
@@ -63,6 +75,21 @@ void setup() {
   }
 
   Serial.println("SD card initialized.");
+
+  // Load weights
+  loadWeights(lstmWeights, lstmBiases, denseWeights, denseBias);
+
+  wI = &lstmWeights[0];
+  wF = &lstmWeights[NUMUNITS * (NUMUNITS + INPUTSIZE)];
+  wC = &lstmWeights[2 * NUMUNITS * (NUMUNITS + INPUTSIZE)];
+  wO = &lstmWeights[3 * NUMUNITS * (NUMUNITS + INPUTSIZE)];
+
+  bI = &lstmBias[0];
+  bF = &lstmBias[NUMUNITS];
+  bC = &lstmBias[2 * NUMUNITS];
+  bO = &lstmBias[3 * NUMUNITS];
+
+  lstm = new LSTM(NUMUNITS, INPUTSIZE, wI, Wf, Wc, Wo, bI, bF, bC, bO);
 
   sca3300.initChip();
 
