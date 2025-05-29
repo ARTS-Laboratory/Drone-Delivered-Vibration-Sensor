@@ -1,16 +1,12 @@
 // Copyright ARTS Lab, 2024
 // Smart sensing node with online signal compensation
 
-#include "lstm-compensation.h"
+#include "signal-compensation.h"
 #include "lstm.h"
 #include "linear-algebra.h"
-#include "model-weights.h"
-#include <SCA3300.h>
 #include <SD.h>
 #include <SPI.h>
 
-using edgeML::LSTM;
-using edgeML::dotProduct;
 using sca3300_library::SCA3300;
 using sca3300_library::OperationMode;
 using sca3300_library::Axis;
@@ -36,10 +32,10 @@ float data[DATA_POINTS];
 LSTM* lstm;
 float lstmOutput[NUMUNITS];
 
-float lstmWeights[(NUMUNITS + INPUTSIZE) * 4];
-float lstmBiases[NUMUNITS * 4];
-float denseW[NUMUNITS];
-float denseB;
+float* lstmWeights;
+float* lstmBiases;
+float* denseWeights;
+float* denseBias;
 
 float* wI;
 float* wF;
@@ -57,16 +53,6 @@ void setup() {
   Serial.begin(9600);
   pinMode(LED_PIN, OUTPUT);
 
-  // Generate pointers to the lstm weight matrix
-  Serial.println("Loading Model...");
-  float** lstmWeightMatrix = new float*[NUMUNITS * 4];
-
-  for (int i = 0; i < 4 * NUMUNITS; i++) {
-    lstmWeightMatrix[i] = lstmW[i];
-  }
-
-  Serial.println("Model loaded.");
-
   Serial.println("Initializing SD card...");
 
   if (!SD.begin(SD_CHIP_SELECT)) {
@@ -76,21 +62,28 @@ void setup() {
 
   Serial.println("SD card initialized.");
 
-  // Load weights
-  loadWeights(lstmWeights, lstmBiases, denseWeights, denseBias);
+  Serial.println("Loading model.");
+  lstmWeights = new float[NUMUNITS * (NUMUNITS + INPUTSIZE) * 4];
+  lstmBiases = new float[NUMUNITS * 4];
+  denseWeights = new float[NUMUNITS];
+  denseBias = new float;
+  loadWeights(lstmWeights, lstmBiases, denseWeights, denseBias, NUMUNITS,
+              INPUTSIZE);
+
 
   wI = &lstmWeights[0];
   wF = &lstmWeights[NUMUNITS * (NUMUNITS + INPUTSIZE)];
   wC = &lstmWeights[2 * NUMUNITS * (NUMUNITS + INPUTSIZE)];
   wO = &lstmWeights[3 * NUMUNITS * (NUMUNITS + INPUTSIZE)];
 
-  bI = &lstmBias[0];
-  bF = &lstmBias[NUMUNITS];
-  bC = &lstmBias[2 * NUMUNITS];
-  bO = &lstmBias[3 * NUMUNITS];
+  bI = &lstmBiases[0];
+  bF = &lstmBiases[NUMUNITS];
+  bC = &lstmBiases[2 * NUMUNITS];
+  bO = &lstmBiases[3 * NUMUNITS];
 
-  lstm = new LSTM(NUMUNITS, INPUTSIZE, wI, Wf, Wc, Wo, bI, bF, bC, bO);
+  lstm = new LSTM(NUMUNITS, INPUTSIZE, wI, wF, wC, wO, bI, bF, bC, bO);
 
+  Serial.println("Model loaded.");
   sca3300.initChip();
 
   Serial.print("Sampling frequency:");
@@ -112,7 +105,7 @@ void loop() {
   sprintf(fileName, "DATA%03d.csv", fileNameCount);
   writeSDConverted(data, fileName);
 
-  lstm->resetState();
+  lstm->reset();
   delay(2000);
 }
 
@@ -171,10 +164,10 @@ void writeSDConverted(float* data,
 
 float runInference(float* input) {
     lstm->step(input, lstmOutput);
-    return dotProduct(lstmOutput, denseW, NUMUNITS) + denseB;
+    return dot(lstmOutput, denseWeights, NUMUNITS) + *denseBias;
 }
 
-void loadWeights(float* lstmWeights, float* lstmBias, float* denseWeights,
+void loadWeights(float* lstmWeights, float* lstmBiases, float* denseWeights,
                  float* denseBias, int numUnits, int inputSize) {
   uint8_t buffer[4];
   int matrix_size = (numUnits + inputSize) * numUnits;
@@ -191,7 +184,7 @@ void loadWeights(float* lstmWeights, float* lstmBias, float* denseWeights,
 
   file.close();
 
-  File file = SD.open("model_binaries/lstm/wF.dat", FILE_READ);
+  file = SD.open("model_binaries/lstm/wF.dat", FILE_READ);
   for (int i = matrix_size; i < matrix_size * 2; i++) {
     for (int j = 0; j < 4; j++) {
       buffer[j] = file.read();
@@ -202,7 +195,7 @@ void loadWeights(float* lstmWeights, float* lstmBias, float* denseWeights,
 
   file.close();
 
-  File file = SD.open("model_binaries/lstm/wC.dat", FILE_READ);
+  file = SD.open("model_binaries/lstm/wC.dat", FILE_READ);
   for (int i = matrix_size * 2; i < matrix_size * 3; i++) {
     for (int j = 0; j < 4; j++) {
       buffer[j] = file.read();
@@ -213,7 +206,7 @@ void loadWeights(float* lstmWeights, float* lstmBias, float* denseWeights,
 
   file.close();
 
-  File file = SD.open("model_binaries/lstm/wO.dat", FILE_READ);
+  file = SD.open("model_binaries/lstm/wO.dat", FILE_READ);
   for (int i = matrix_size * 3; i < matrix_size * 4; i++) {
     for (int j = 0; j < 4; j++) {
       buffer[j] = file.read();
@@ -225,52 +218,52 @@ void loadWeights(float* lstmWeights, float* lstmBias, float* denseWeights,
   file.close();
 
   // Load LSTM bias vectors
-  File file = SD.open("model_binaries/lstm/bI.dat", FILE_READ);
+  file = SD.open("model_binaries/lstm/bI.dat", FILE_READ);
   for (int i = 0; i < numUnits; i++) {
     for (int j = 0; j < 4; j++) {
       buffer[j] = file.read();
     }
 
-    memcpy(&lstmBias[i], buffer, 4);
+    memcpy(&lstmBiases[i], buffer, 4);
   }
 
   file.close();
 
-  File file = SD.open("model_binaries/lstm/bF.dat", FILE_READ);
+  file = SD.open("model_binaries/lstm/bF.dat", FILE_READ);
   for (int i = numUnits; i < numUnits * 2; i++) {
     for (int j = 0; j < 4; j++) {
       buffer[j] = file.read();
     }
 
-    memcpy(&lstmBias[i], buffer, 4);
+    memcpy(&lstmBiases[i], buffer, 4);
   }
 
   file.close();
 
-  File file = SD.open("model_binaries/lstm/bC.dat", FILE_READ);
+  file = SD.open("model_binaries/lstm/bC.dat", FILE_READ);
   for (int i = numUnits * 2; i < numUnits * 3; i++) {
     for (int j = 0; j < 4; j++) {
       buffer[j] = file.read();
     }
 
-    memcpy(&lstmBias[i], buffer, 4);
+    memcpy(&lstmBiases[i], buffer, 4);
   }
 
   file.close();
 
-  File file = SD.open("model_binaries/lstm/bO.dat", FILE_READ);
+  file = SD.open("model_binaries/lstm/bO.dat", FILE_READ);
   for (int i = numUnits * 3; i < numUnits * 4; i++) {
     for (int j = 0; j < 4; j++) {
       buffer[j] = file.read();
     }
 
-    memcpy(&lstmBias[i], buffer, 4);
+    memcpy(&lstmBiases[i], buffer, 4);
   }
 
   file.close();
 
   // Load dense weights
-  File file = SD.open("model_binaries/dense_top/w.dat", FILE_READ);
+  file = SD.open("model_binaries/dense_top/w.dat", FILE_READ);
   for (int i = 0; i < numUnits; i++) {
     for (int j = 0; j < 4; j++) {
       buffer[j] = file.read();
@@ -282,7 +275,7 @@ void loadWeights(float* lstmWeights, float* lstmBias, float* denseWeights,
   file.close();
 
   // Load dense bias
-  File file = SD.open("model_binaries/dense_top/w.dat", FILE_READ);
+  file = SD.open("model_binaries/dense_top/w.dat", FILE_READ);
   for (int j = 0; j < 4; j++) {
     buffer[j] = file.read();
   }
