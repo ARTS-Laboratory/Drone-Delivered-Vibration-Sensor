@@ -19,7 +19,7 @@ void matvec(float* output, float* matrix, float* vector, int m, int n) {
 
   for (int i = 0; i < n; i++) {
     offset = n * i;
-    output[n] = 0;
+    output[i] = 0;
 
     for (int j = 0; j < m; j++) {
       output[i] += matrix[offset + j] * vector[j];
