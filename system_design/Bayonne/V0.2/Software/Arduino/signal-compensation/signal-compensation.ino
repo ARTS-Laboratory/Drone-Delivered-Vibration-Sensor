@@ -98,6 +98,7 @@ void setup() {
   }
 }
 
+
 void loop() {
   digitalWrite(LED_PIN, HIGH);
   recordData(data, DELAY_TIME);
@@ -108,6 +109,7 @@ void loop() {
   lstm->reset();
   delay(2000);
 }
+
 
 void recordData(float* data, uint32_t delayTime) {
   unsigned long endTime;
@@ -127,6 +129,7 @@ void recordData(float* data, uint32_t delayTime) {
 
   Serial.println("Finish Recording");
 }
+
 
 void writeSDConverted(float* data,
                       char* fileName) {
@@ -161,6 +164,7 @@ void writeSDConverted(float* data,
     Serial.printf("Unable to create %c.\n", fileName);
   }
 }
+
 
 float runInference(float* input) {
     lstm->step(input, lstmOutput);
@@ -275,7 +279,7 @@ void loadWeights(float* lstmWeights, float* lstmBiases, float* denseWeights,
   file.close();
 
   // Load dense bias
-  file = SD.open("model_binaries/dense_top/w.dat", FILE_READ);
+  file = SD.open("model_binaries/dense_top/b.dat", FILE_READ);
   for (int j = 0; j < 4; j++) {
     buffer[j] = file.read();
   }
