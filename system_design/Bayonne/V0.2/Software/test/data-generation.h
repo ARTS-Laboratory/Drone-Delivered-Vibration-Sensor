@@ -5,6 +5,9 @@
 // from a sensor package. This is only meant as a debugging tool for the model's
 // implementation.
 
+#ifndef TEST_LSTM
+#define TEST_LSTM
+
 #include <math.h>
 #include <vector>
 using std::vector;
@@ -16,3 +19,5 @@ void genSinwave(vector<float>& buffer, float amplitude, float freqency);
 // Writes a frequency sweep to a vector.
 void genSweep(vector<float>& buffer, float amplitude, float startFreq,
               float endFreq);
+
+#endif  //TEST_LSTM
