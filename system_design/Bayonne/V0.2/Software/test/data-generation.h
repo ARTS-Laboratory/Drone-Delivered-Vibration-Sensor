@@ -5,8 +5,8 @@
 // from a sensor package. This is only meant as a debugging tool for the model's
 // implementation.
 
-#ifndef TEST_LSTM
-#define TEST_LSTM
+#ifndef DATA_GEN
+#define DATA_GEN
 
 #include <math.h>
 #include <vector>
@@ -20,4 +20,4 @@ void genSinwave(vector<float>& buffer, float amplitude, float freqency);
 void genSweep(vector<float>& buffer, float amplitude, float startFreq,
               float endFreq);
 
-#endif  //TEST_LSTM
+#endif  // DATA_GEN
