@@ -13,7 +13,7 @@
 using std::vector;
 
 // Writes a sinwave of a given frequency to a vector.
-void genSinwave(vector<float>& buffer, float amplitude, float freqency);
+void genSinwave(vector<float>& buffer, float amplitude, float freqency, bool useNoise);
 
 
 // Writes a frequency sweep to a vector.

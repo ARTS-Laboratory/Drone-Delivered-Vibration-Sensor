@@ -339,3 +339,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 Test data/Bridge shaker FFT monitoring test/test.lvm
+system_design/Bayonne/V0.2/Software/test/test.out
+system_design/Bayonne/V0.2/Software/test/test-lstm-out.csv
