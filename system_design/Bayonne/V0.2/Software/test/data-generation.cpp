@@ -14,7 +14,7 @@ using std::vector;
 // Writes a sinwave of a given frequency to a vector.
 void genSinwave(vector<float>& buffer, float amplitude, float freqency,
                 bool useNoise) {
-  for (int i = 0; i < buffer.size(); i++) {
+  for (long unsigned int i = 0; i < buffer.size(); i++) {
     buffer[i] = amplitude * sin(2 * M_PI * freqency * i);
   }
 }
@@ -26,7 +26,7 @@ void genSweep(vector<float>& buffer, float amplitude, float startFreq,
   float step = (endFreq - startFreq) / buffer.size();
   float currentFreq = startFreq;
 
-  for (int i = 0; i < buffer.size(); i++) {
+  for (long unsigned int i = 0; i < buffer.size(); i++) {
     buffer[i] = amplitude * sin(2 * M_PI * currentFreq * i);
 
     currentFreq += step;

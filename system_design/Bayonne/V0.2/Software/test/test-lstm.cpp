@@ -9,20 +9,46 @@
 #include "model-loading.h"
 #include <fstream>
 #include <iostream>
-#include <iterator>
+#include <stdexcept>
+#include <string>
 #include <vector>
 #include <math.h>
-#include <cstdlib>
 
 using std::ifstream;
 using std::ofstream;
 using std::vector;
 using std::cout;
+using std::string;
 
 
 int main() {
-  vector<float> inputData(2000);
-  vector<float> outputData(2000);
+  vector<float> inputData;
+
+  ifstream sampleData("test_data.csv");
+
+  if (!sampleData.is_open()) {
+    cout << "The data file cannot be opened.\n";
+    return 1;
+  }
+
+
+  string line;
+  while (std::getline(sampleData, line)) {
+    cout << line;
+
+    try {
+      inputData.push_back(std::stof(line));
+    } catch (const std::invalid_argument& e) {
+      std::cerr << "This float could not be read.\n"; 
+    } catch (const std::out_of_range& e) {
+      std::cerr << "This float is out of range.\n";
+    }
+
+    cout << inputData.back() << "\n";
+  }
+
+
+  vector<float> outputData = inputData;
   
   int numUnits = 50;
   int inputSize = 1;
@@ -46,6 +72,7 @@ int main() {
   cout << "Loading weights...\n";
   loadWeights(lstmWeights, lstmBias, denseWeights, denseBias, numUnits,
               inputSize);
+
   cout << "Weights loaded.\n";
 
   LSTM* lstm = new LSTM(NUMUNITS, INPUTSIZE, wI, wF, wC, wO, bI, bF, bC, bO);
@@ -53,16 +80,16 @@ int main() {
   // float lstmOut[50];
   float* lstmOut = new float[50];
 
-  genSinwave(inputData, 0.15, 10, false);
+  genSinwave(inputData, 0.5, 10, false);
 
-  for (int i = 0; i < inputData.size(); i++) {
+  for (long unsigned int i = 0; i < inputData.size(); i++) {
     outputData[i] = runInference(&inputData[i], lstm, lstmOut, numUnits,
                                  denseWeights, denseBias);
   }
 
   ofstream outputFile("test-lstm-out.csv");
 
-  for (int i = 0; i < inputData.size(); i++) {
+  for (long unsigned int i = 0; i < inputData.size(); i++) {
     outputFile << inputData[i] << "," << outputData[i] << "\n";
   }
 
