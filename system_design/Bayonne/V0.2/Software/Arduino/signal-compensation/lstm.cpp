@@ -5,7 +5,7 @@ LSTM::LSTM(int numUnits, int inputSize, float* wI, float* wF,
           float* wC, float* wO, float* bI, float* bF, float* bC, float* bO) :
           numUnits(numUnits), inputSize(inputSize), wI(wI), wF(wF),
           wC(wC), wO(wO), bI(bI), bF(bF), bC(bC), bO(bO) {
-  this->states = new float[numUnits + inputSize];
+  this->states = new float[numUnits + inputSize]();
 
   this->iGate = new float[numUnits]();
   this->fGate = new float[numUnits]();
@@ -35,7 +35,7 @@ void LSTM::step(float* destination, float* input) {
     cCandidate[i] = hypertan(cCandidate[i] + bC[i]);
 
     // Compute C
-    cGate[i] = sigmoid(cGate[i] * fGate[i] + iGate[i] * cCandidate[i]);
+    cGate[i] = cGate[i] * fGate[i] + iGate[i] * cCandidate[i];
 
     // Compute and write output
     destination[i] = states[i + inputSize] = hypertan(cGate[i]) * oGate[i];
