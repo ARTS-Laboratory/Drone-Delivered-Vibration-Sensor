@@ -41,8 +41,6 @@ int main() {
     } catch (const std::out_of_range& e) {
       std::cerr << "This float is out of range.\n";
     }
-
-    cout << line << " " << stof(line) << "\n";
   }
 
 
