@@ -34,8 +34,6 @@ int main() {
 
   string line;
   while (std::getline(sampleData, line)) {
-    cout << line;
-
     try {
       inputData.push_back(std::stof(line));
     } catch (const std::invalid_argument& e) {
@@ -43,8 +41,6 @@ int main() {
     } catch (const std::out_of_range& e) {
       std::cerr << "This float is out of range.\n";
     }
-
-    cout << inputData.back() << "\n";
   }
 
 
