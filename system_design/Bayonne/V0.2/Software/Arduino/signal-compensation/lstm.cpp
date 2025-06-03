@@ -1,5 +1,5 @@
 #include "lstm.h"
-#include "linear-argebra.h"
+#include "linear-algebra.h"
 
 LSTM::LSTM(int numUnits, int inputSize, float* wI, float* wF,
           float* wC, float* wO, float* bI, float* bF, float* bC, float* bO) :
@@ -18,7 +18,7 @@ LSTM::LSTM(int numUnits, int inputSize, float* wI, float* wF,
 
 void LSTM::step(float* destination, float* input) {
   // Concatonate x and h_t-1
-  for (int i = 0; i < numUnits; i++) {
+  for (int i = 0; i < inputSize; i++) {
     states[i] = input[i];
   }
 
