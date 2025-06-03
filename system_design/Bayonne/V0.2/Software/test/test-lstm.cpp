@@ -55,7 +55,7 @@ int main() {
 
   // Dynamically declared, just like it is on edge.
   float* lstmWeights = new float[4 * numUnits * (numUnits + inputSize)];
-  float* lstmBias = new float[numUnits + inputSize];
+  float* lstmBias = new float[4 * numUnits];
   float* denseWeights = new float[numUnits];
   float* denseBias = new float;
 
