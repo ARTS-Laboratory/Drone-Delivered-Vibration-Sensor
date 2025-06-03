@@ -3,4 +3,8 @@ CFLAGS=-Wall -g
 
 testLstm:
 	$(CC) $(CFLAGS) -o test.out test-lstm.cpp data-generation.cpp model-loading.cpp ../Arduino/signal-compensation/lstm.cpp ../Arduino/signal-compensation/linear-algebra.cpp
+	./test.out
+
+debugtLstm:
+	$(CC) $(CFLAGS) -o test.out test-lstm.cpp data-generation.cpp model-loading.cpp ../Arduino/signal-compensation/lstm.cpp ../Arduino/signal-compensation/linear-algebra.cpp
 	gdb ./test.out
