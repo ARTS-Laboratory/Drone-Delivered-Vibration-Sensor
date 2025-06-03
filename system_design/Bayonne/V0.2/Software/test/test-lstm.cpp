@@ -86,7 +86,7 @@ int main() {
   ofstream outputFile("test-lstm-out.csv");
 
   for (long unsigned int i = 0; i < inputData.size(); i++) {
-    outputFile << inputData[i] << "," << outputData[i] << "\n";
+    outputFile << inputData[i] << ",  " << outputData[i] << "\n";
   }
 
   outputFile.close();
