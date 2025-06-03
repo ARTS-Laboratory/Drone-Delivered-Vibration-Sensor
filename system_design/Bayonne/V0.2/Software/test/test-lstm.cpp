@@ -41,6 +41,8 @@ int main() {
     } catch (const std::out_of_range& e) {
       std::cerr << "This float is out of range.\n";
     }
+
+    cout << line << " " << stof(line) << "\n";
   }
 
 
@@ -75,8 +77,6 @@ int main() {
 
   // float lstmOut[50];
   float* lstmOut = new float[50];
-
-  genSinwave(inputData, 0.5, 10, false);
 
   for (long unsigned int i = 0; i < inputData.size(); i++) {
     outputData[i] = runInference(&inputData[i], lstm, lstmOut, numUnits,
