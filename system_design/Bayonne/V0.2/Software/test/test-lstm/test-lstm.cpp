@@ -23,7 +23,7 @@ using std::string;
 int main() {
   vector<float> inputData;
 
-  ifstream sampleData("test_data.csv");
+  ifstream sampleData("measured.csv");
 
   if (!sampleData.is_open()) {
     cout << "The data file cannot be opened.\n";
@@ -35,6 +35,19 @@ int main() {
   while (std::getline(sampleData, line)) {
     try {
       inputData.push_back(std::stof(line));
+    } catch (const std::invalid_argument& e) {
+      std::cerr << "This float could not be read.\n"; 
+    } catch (const std::out_of_range& e) {
+      std::cerr << "This float is out of range.\n";
+    }
+  }
+
+  vector<float> lstmTrue;
+
+  ifstream trueData("uncompressed.csv");
+  while (std::getline(trueData, line)) {
+    try {
+      lstmTrue.push_back(std::stof(line));
     } catch (const std::invalid_argument& e) {
       std::cerr << "This float could not be read.\n"; 
     } catch (const std::out_of_range& e) {
@@ -83,7 +96,7 @@ int main() {
   ofstream outputFile("test-lstm-out.csv");
 
   for (long unsigned int i = 0; i < inputData.size(); i++) {
-    outputFile << inputData[i] << ",  " << outputData[i] << "\n";
+    outputFile << lstmTrue[i] << ",  " << outputData[i] << "\n";
   }
 
   outputFile.close();
