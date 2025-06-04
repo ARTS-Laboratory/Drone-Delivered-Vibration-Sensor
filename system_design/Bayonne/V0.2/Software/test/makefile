@@ -2,9 +2,9 @@ CC=g++
 CFLAGS=-Wall -g
 
 testLstm:
-	$(CC) $(CFLAGS) -o test.out test-lstm.cpp data-generation.cpp model-loading.cpp ../Arduino/signal-compensation/lstm.cpp ../Arduino/signal-compensation/linear-algebra.cpp
+	$(CC) $(CFLAGS) -o test.out test-lstm/test-lstm.cpp test-lstm/model-loading.cpp ../Arduino/signal-compensation/lstm.cpp ../Arduino/signal-compensation/linear-algebra.cpp
 	./test.out
 
-debugtLstm:
-	$(CC) $(CFLAGS) -o test.out test-lstm.cpp data-generation.cpp model-loading.cpp ../Arduino/signal-compensation/lstm.cpp ../Arduino/signal-compensation/linear-algebra.cpp
+debugLstm:
+	$(CC) $(CFLAGS) -o test.out test-lstm/test-lstm.cpp test-lstm/model-loading.cpp ../Arduino/signal-compensation/lstm.cpp ../Arduino/signal-compensation/linear-algebra.cpp
 	gdb ./test.out

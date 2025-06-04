@@ -3,9 +3,8 @@
 // Simple testbench for the LSTM model
 
 #include "test-lstm.h"
-#include "../Arduino/signal-compensation/lstm.h"
-#include "../Arduino/signal-compensation/linear-algebra.h"
-#include "data-generation.h"
+#include "../../Arduino/signal-compensation/lstm.h"
+#include "../../Arduino/signal-compensation/linear-algebra.h"
 #include "model-loading.h"
 #include <fstream>
 #include <iostream>
