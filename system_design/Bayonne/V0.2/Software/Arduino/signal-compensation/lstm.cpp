@@ -19,7 +19,7 @@ LSTM::LSTM(int numUnits, int inputSize, float* wI, float* wF,
 void LSTM::step(float* destination, float* input) {
   // Concatonate x and h_t-1
   for (int i = 0; i < inputSize; i++) {
-    states[i] = input[i];
+    states[i + numUnits] = input[i];
   }
 
   matvec(iGate, wI, states, numUnits, numUnits + inputSize);
@@ -38,7 +38,7 @@ void LSTM::step(float* destination, float* input) {
     cGate[i] = cGate[i] * fGate[i] + iGate[i] * cCandidate[i];
 
     // Compute and write output
-    destination[i] = states[i + inputSize] = hypertan(cGate[i]) * oGate[i];
+    destination[i] = states[i] = hypertan(cGate[i]) * oGate[i];
   }
 }
 

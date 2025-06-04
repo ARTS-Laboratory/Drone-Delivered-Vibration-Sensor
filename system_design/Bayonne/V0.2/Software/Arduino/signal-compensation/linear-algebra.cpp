@@ -24,7 +24,6 @@ void matvec(float* output, float* matrix, float* vector, int m, int n) {
     for (int j = 0; j < n; j++) {
       output[i] += matrix[offset + j] * vector[j];
     }
-    // output[i] = dot(&output[offset], vector, n);
   }
 }
 
