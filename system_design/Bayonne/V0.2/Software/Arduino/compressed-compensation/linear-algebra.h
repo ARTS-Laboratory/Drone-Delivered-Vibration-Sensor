@@ -13,6 +13,6 @@ void dofMatvec(float* output, float* b, float* c, float* vector, int n, int m, i
 
 float sigmoid(float x);
 
-float hypertan9(float x);
+float hypertan(float x);
 
 #endif  // LINEAR_ALGEBRA_H
