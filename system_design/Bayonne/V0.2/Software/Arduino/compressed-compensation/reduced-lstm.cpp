@@ -27,7 +27,7 @@ void ReducedLSTM::step(float* destination, float* input) {
   }
 
   dofMatvec(states, w, &w[rank * (numUnits + inputSize)], states,
-            (numUnits + inputSize) * 4, numUnits * 4, rank);
+            numUnits * 4, numUnits + inputSize, rank);
 
       for (int i = 0; i < numUnits; i++) {
     // Apply activation functions and bias
