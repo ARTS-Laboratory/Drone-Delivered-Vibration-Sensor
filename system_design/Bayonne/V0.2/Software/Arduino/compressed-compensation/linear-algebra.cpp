@@ -28,7 +28,7 @@ void matvec(float* output, float* matrix, float* vector, int m, int n) {
 }
 
 
-void dofMatvec(float* output, float* b, float* c, float* vector, int n, int m, int r) {
+void dofMatvec(float* output, float* b, float* c, float* vector, int m, int n, int r) {
   // output = [ax1, ax2]. Here, ax1 has a length of r, and ax2 has a length of n - r.
 
   // ax1 = B * x
