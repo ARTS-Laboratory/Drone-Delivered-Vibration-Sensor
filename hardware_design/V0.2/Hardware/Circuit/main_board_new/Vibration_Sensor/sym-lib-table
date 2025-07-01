@@ -1,0 +1,8 @@
+(sym_lib_table
+  (lib (name ARTS-Lab)(type Legacy)(uri C:/Users/ryanj/Documents/KiCad/Libraries/Vibration_Sensor_Lib/ARTS-Lab.lib)(options "")(descr ""))
+  (lib (name custom)(type Legacy)(uri C:/Users/ryanj/Documents/KiCad/Libraries/Vibration_Sensor_Lib/custom.lib)(options "")(descr ""))
+  (lib (name whs5-rescue)(type Legacy)(uri C:/Users/ryanj/Documents/KiCad/Libraries/Vibration_Sensor_Lib/whs5-rescue.lib)(options "")(descr ""))
+  (lib (name whs6-rescue)(type Legacy)(uri C:/Users/ryanj/Documents/KiCad/Libraries/Vibration_Sensor_Lib/whs6-rescue.lib)(options "")(descr ""))
+  (lib (name Teensy4.0Custom)(type Legacy)(uri C:/Users/ryanj/Documents/KiCad/Libraries/Vibration_Sensor_Lib/Teensy4.0Custom)(options "")(descr ""))
+  (lib (name Teensy4Custom)(type Legacy)(uri C:/Users/ryanj/Documents/KiCad/Libraries/Vibration_Sensor_Lib/Teensy4Custom.lib)(options "")(descr ""))
+)

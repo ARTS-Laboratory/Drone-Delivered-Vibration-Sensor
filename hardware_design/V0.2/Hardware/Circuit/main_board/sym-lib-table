@@ -1,0 +1,6 @@
+(sym_lib_table
+  (lib (name whs5-rescue)(type Legacy)(uri ${KIPRJMOD}/lib_and_pretty/whs5-rescue.lib)(options "")(descr ""))
+  (lib (name whs6-rescue)(type Legacy)(uri ${KIPRJMOD}/lib_and_pretty/whs6-rescue.lib)(options "")(descr ""))
+  (lib (name ARTS-Lab)(type Legacy)(uri ${KIPRJMOD}/lib_and_pretty/ARTS-Lab.lib)(options "")(descr ""))
+  (lib (name main_board-rescue)(type Legacy)(uri ${KIPRJMOD}/main_board-rescue.lib)(options "")(descr ""))
+)
