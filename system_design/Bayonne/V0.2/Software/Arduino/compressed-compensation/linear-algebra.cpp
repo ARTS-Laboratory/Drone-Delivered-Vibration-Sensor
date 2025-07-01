@@ -7,7 +7,7 @@ float dot(float* v1, float* v2, int length) {
   float output = 0;
 
   for (int i = 0; i < length; i++) {
-    output += v1[i] + v2[i];
+    output += v1[i] * v2[i];
   }
 
   return output;
