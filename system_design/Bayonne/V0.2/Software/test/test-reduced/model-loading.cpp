@@ -19,7 +19,7 @@ void loadWeights(float* lstmWeights, float* lstmBiases, float* denseWeights,
   ifstream denseW("./model_binaries/dense_top/w.dat", std::ios::binary);
   ifstream denseB("./model_binaries/dense_top/b.dat", std::ios::binary);
 
-  int matrixSize = rank * 200 + (51 - rank) * rank;
+  int matrixSize = rank * numUnits * 4 + (numUnits + inputSize - rank) * rank;
   int typeSize = sizeof(float);
 
   // Read the LSTM weight matrices
