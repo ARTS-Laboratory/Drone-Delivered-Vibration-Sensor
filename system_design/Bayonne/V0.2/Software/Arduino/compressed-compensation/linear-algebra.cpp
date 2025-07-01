@@ -14,14 +14,14 @@ float dot(float* v1, float* v2, int length) {
 }
 
 
-void matvec(float* output, float* matrix, float* vector, int n, int m) {
+void matvec(float* output, float* matrix, float* vector, int m, int n) {
   int offset;
 
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < m; i++) {
     offset = n * i;
-    output[n] = 0;
+    output[i] = 0;
 
-    for (int j = 0; j < m; j++) {
+    for (int j = 0; j < n; j++) {
       output[i] += matrix[offset + j] * vector[j];
     }
   }
@@ -35,7 +35,7 @@ void dofMatvec(float* output, float* b, float* c, float* vector, int n, int m, i
   matvec(output, b, vector, r, m);
 
   // ax2 = C * ax1
-  matvec(output + r, c, output, n - r, r);
+  matvec(&output[r], c, output, n - r, r);
 }
 
 
