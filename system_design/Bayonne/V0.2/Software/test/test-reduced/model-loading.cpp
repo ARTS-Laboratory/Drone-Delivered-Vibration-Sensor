@@ -9,7 +9,8 @@ using std::ifstream;
 
 void loadWeights(float* lstmWeights, float* lstmBiases, float* denseWeights,
                  float* denseBias, int numUnits, int inputSize, int rank) {
-  ifstream w("./model_binaries/reduced-lstm/w.dat", std::ios::binary);
+  ifstream b("./model_binaries/reduced-lstm/b.dat", std::ios::binary);
+  ifstream c("./model_binaries/reduced-lstm/c.dat", std::ios::binary);
   
   ifstream bI("./model_binaries/lstm/bI.dat", std::ios::binary);
   ifstream bF("./model_binaries/lstm/bF.dat", std::ios::binary);
@@ -19,11 +20,13 @@ void loadWeights(float* lstmWeights, float* lstmBiases, float* denseWeights,
   ifstream denseW("./model_binaries/dense_top/w.dat", std::ios::binary);
   ifstream denseB("./model_binaries/dense_top/b.dat", std::ios::binary);
 
-  int matrixSize = rank * numUnits * 4 + (numUnits + inputSize - rank) * rank;
+  int bMatrixSize = rank * (numUnits + inputSize);
+  int cMatrixSize = ((numUnits * 4) - rank) * rank;
   int typeSize = sizeof(float);
 
   // Read the LSTM weight matrices
-  w.read(reinterpret_cast<char*>(lstmWeights), matrixSize * typeSize);
+  b.read(reinterpret_cast<char*>(lstmWeights), bMatrixSize * typeSize);
+  c.read(reinterpret_cast<char*>(&lstmWeights[bMatrixSize]), cMatrixSize * typeSize);
 
   // Read the LSTM bias
   bI.read(reinterpret_cast<char *>(&lstmBiases[0]), numUnits * typeSize);

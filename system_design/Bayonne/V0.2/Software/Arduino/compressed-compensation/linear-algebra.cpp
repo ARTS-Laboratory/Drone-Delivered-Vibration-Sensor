@@ -32,10 +32,10 @@ void dofMatvec(float* output, float* b, float* c, float* vector, int m, int n, i
   // output = [ax1, ax2]. Here, ax1 has a length of r, and ax2 has a length of n - r.
 
   // ax1 = B * x
-  matvec(output, b, vector, r, m);
+  matvec(output, b, vector, r, n);
 
   // ax2 = C * ax1
-  matvec(&output[r], c, output, n - r, r);
+  matvec(&output[r], c, output, m - r, r);
 }
 
 

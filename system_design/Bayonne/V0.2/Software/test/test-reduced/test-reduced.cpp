@@ -65,7 +65,7 @@ int main() {
   int n = numUnits + inputSize;
 
   // Dynamically declared, just like it is on edge.
-  float* lstmWeights = new float[rank * m + (n - rank) * rank];
+  float* lstmWeights = new float[rank * n + ((m - rank) * rank)];
   float* lstmBias = new float[4 * numUnits];
   float* denseWeights = new float[numUnits];
   float* denseBias = new float;
@@ -79,10 +79,13 @@ int main() {
   loadWeights(lstmWeights, lstmBias, denseWeights, denseBias, numUnits,
               inputSize, rank);
 
+  float* b = lstmWeights;
+  float* c = &lstmWeights[rank * (numUnits + inputSize)];
+
   cout << "Weights loaded.\n";
 
   ReducedLSTM *lstm =
-      new ReducedLSTM(numUnits, inputSize, rank, lstmWeights, bI, bF, bC, bO);
+      new ReducedLSTM(numUnits, inputSize, rank, b, c, bI, bF, bC, bO);
 
   float* lstmOut = new float[50];
 
