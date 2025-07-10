@@ -10,7 +10,7 @@ ReducedLSTM::
   this->gates = new float[numUnits * 4]();
 
   // "Pre-compute" the address of each gate in the gates vector for
-  // convenience (similarity to the original LSTM implementation)
+  // convenience
   this->iGate = gates;
   this->fGate = &gates[numUnits * 1];
   this->cCandidate = &gates[numUnits * 2];

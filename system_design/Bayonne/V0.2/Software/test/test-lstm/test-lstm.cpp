@@ -67,11 +67,6 @@ int main() {
   float* denseWeights = new float[numUnits];
   float* denseBias = new float;
 
-  float* wI = &lstmWeights[0];
-  float* wF = &lstmWeights[NUMUNITS * (NUMUNITS + INPUTSIZE)];
-  float* wC = &lstmWeights[2 * NUMUNITS * (NUMUNITS + INPUTSIZE)];
-  float* wO = &lstmWeights[3 * NUMUNITS * (NUMUNITS + INPUTSIZE)];
-
   float* bI = &lstmBias[0];
   float* bF = &lstmBias[NUMUNITS];
   float* bC = &lstmBias[2 * NUMUNITS];
@@ -83,7 +78,7 @@ int main() {
 
   cout << "Weights loaded.\n";
 
-  LSTM* lstm = new LSTM(NUMUNITS, INPUTSIZE, wI, wF, wC, wO, bI, bF, bC, bO);
+  LSTM* lstm = new LSTM(NUMUNITS, INPUTSIZE, lstmWeights, bI, bF, bC, bO);
 
   // float lstmOut[50];
   float* lstmOut = new float[50];
