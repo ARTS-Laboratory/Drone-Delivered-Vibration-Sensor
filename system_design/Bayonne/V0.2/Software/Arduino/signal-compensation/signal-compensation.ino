@@ -37,10 +37,6 @@ float* lstmBiases;
 float* denseWeights;
 float* denseBias;
 
-float* wI;
-float* wF;
-float* wC;
-float* wO;
 float* bI;
 float* bF;
 float* bC;
@@ -70,18 +66,12 @@ void setup() {
   loadWeights(lstmWeights, lstmBiases, denseWeights, denseBias, NUMUNITS,
               INPUTSIZE);
 
-
-  wI = &lstmWeights[0];
-  wF = &lstmWeights[NUMUNITS * (NUMUNITS + INPUTSIZE)];
-  wC = &lstmWeights[2 * NUMUNITS * (NUMUNITS + INPUTSIZE)];
-  wO = &lstmWeights[3 * NUMUNITS * (NUMUNITS + INPUTSIZE)];
-
   bI = &lstmBiases[0];
   bF = &lstmBiases[NUMUNITS];
   bC = &lstmBiases[2 * NUMUNITS];
   bO = &lstmBiases[3 * NUMUNITS];
 
-  lstm = new LSTM(NUMUNITS, INPUTSIZE, wI, wF, wC, wO, bI, bF, bC, bO);
+  lstm = new LSTM(NUMUNITS, INPUTSIZE, lstmWeights, bI, bF, bC, bO);
 
   Serial.println("Model loaded.");
   sca3300.initChip();
@@ -175,26 +165,14 @@ float runInference(float* input) {
 
 void loadWeights(float* lstmWeights, float* lstmBiases, float* denseWeights,
                  float* denseBias, int numUnits, int inputSize) {
-  int matrixSize = (numUnits + inputSize) * numUnits;
+  int matrixSize = (numUnits + inputSize) * numUnits * 4;
 
-  // Load LSTM weight matrices
-  File file = SD.open("model_binaries/lstm/wI.dat", FILE_READ);
+  // Here, the size of the buffer is the number of elements times 4. This is
+  // because the elements are single precision floats, which are four bytes long.
+
+  // Load LSTM weight matrices.
+  File file = SD.open("model_binaries/lstm/w.dat", FILE_READ);
   file.read(&lstmWeights[0], matrixSize * 4);
-
-  file.close();
-
-  file = SD.open("model_binaries/lstm/wF.dat", FILE_READ);
-  file.read(&lstmWeights[matrixSize], matrixSize * 4);
-
-  file.close();
-
-  file = SD.open("model_binaries/lstm/wC.dat", FILE_READ);
-  file.read(&lstmWeights[matrixSize * 2], matrixSize * 4);
-
-  file.close();
-
-  file = SD.open("model_binaries/lstm/wO.dat", FILE_READ);
-  file.read(&lstmWeights[matrixSize * 3], matrixSize * 4);
 
   file.close();
 
