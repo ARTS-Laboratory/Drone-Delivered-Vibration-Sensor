@@ -3,6 +3,9 @@
 #ifndef LSTM_COMPENSATION_H
 #define LSTM_COMPENSATION_H
 
+#define NUMUNITS 50
+#define INPUTSIZE 1
+
 #include <SCA3300.h>
 #include "lstm.h"
 
