@@ -36,6 +36,7 @@ Cite as:
   title  = {Drone Delivered Vibration Sensor},    
   groups = {{ARTS-L}ab},    
   url    = {https://github.com/ARTS-Laboratory/Drone-Delivered-Vibration-Sensor},   
+  note = {Accessed: Month dd, yyyy},   
 }
 
 <p align="center">
