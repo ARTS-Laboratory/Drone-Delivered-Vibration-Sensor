@@ -27,3 +27,10 @@ fp-info-cache
 # =========================
 .DS_Store
 Thumbs.db
+
+# =========================
+# Visual Micro / Arduino IDE temp files
+# =========================
+__vm/
+*.vmps.xml
+*.vsarduino.h
