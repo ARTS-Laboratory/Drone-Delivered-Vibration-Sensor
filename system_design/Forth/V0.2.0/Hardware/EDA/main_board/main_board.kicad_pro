@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 1.2,
-          "height": 1.7,
-          "width": 1.7
+          "drill": 0.762,
+          "height": 1.524,
+          "width": 1.524
         },
         "silk_line_width": 0.12,
         "silk_text_italic": false,
@@ -138,7 +138,7 @@
         "min_track_width": 0.2,
         "min_via_annular_width": 0.1,
         "min_via_diameter": 0.4,
-        "solder_mask_clearance": 0.05,
+        "solder_mask_clearance": 0.0,
         "solder_mask_min_width": 0.0,
         "solder_mask_to_copper_clearance": 0.0,
         "solder_paste_clearance": 0.0,
@@ -460,7 +460,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "child_board.kicad_pro",
+    "filename": "main_board.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -492,51 +492,155 @@
     "netclass_patterns": [
       {
         "netclass": "Default",
-        "pattern": "+3V3"
-      },
-      {
-        "netclass": "Default",
         "pattern": "GND"
       },
       {
         "netclass": "Default",
-        "pattern": "Net-(C2-Pad2)"
+        "pattern": "Net-(BT1-Pad1)"
       },
       {
         "netclass": "Default",
-        "pattern": "Net-(C3-Pad2)"
+        "pattern": "Net-(C1-Pad1)"
       },
       {
         "netclass": "Default",
-        "pattern": "Net-(J1-Pad2)"
+        "pattern": "Net-(C2-Pad1)"
       },
       {
         "netclass": "Default",
-        "pattern": "Net-(J1-Pad3)"
+        "pattern": "Net-(C3-Pad1)"
       },
       {
         "netclass": "Default",
-        "pattern": "Net-(U1-Pad4)"
+        "pattern": "Net-(D1-Pad2)"
       },
       {
         "netclass": "Default",
-        "pattern": "Net-(U1-Pad5)"
+        "pattern": "Net-(F1-Pad1)"
       },
       {
         "netclass": "Default",
-        "pattern": "Net-(U1-Pad6)"
+        "pattern": "Net-(F1-Pad2)"
       },
       {
         "netclass": "Default",
-        "pattern": "Net-(U1-Pad7)"
+        "pattern": "Net-(Micro_SD1-Pad2)"
       },
       {
         "netclass": "Default",
-        "pattern": "Net-(U1-Pad8)"
+        "pattern": "Net-(Micro_SD1-Pad3)"
       },
       {
         "netclass": "Default",
-        "pattern": "Net-(U1-Pad9)"
+        "pattern": "Net-(Micro_SD1-Pad4)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(Micro_SD1-Pad5)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(R1-Pad2)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad10)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad11)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad12)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad2)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad21)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad22)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad23)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad24)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad25)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad26)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad27)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad28)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad29)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad3)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad30)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad31)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad32)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad4)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad7)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad8)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U2-Pad9)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U7-Pad1)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U7-Pad3)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(U7-Pad4)"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "Net-(switch1-Pad3)"
       }
     ]
   },
@@ -544,7 +648,7 @@
     "last_paths": {
       "gencad": "",
       "idf": "",
-      "netlist": "Magdron mount.net",
+      "netlist": "Vibration_Sensor.net",
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",
@@ -670,7 +774,7 @@
   },
   "sheets": [
     [
-      "ff9e4151-ec0d-4393-a9ab-79a4e76c917d",
+      "d7fba675-2a19-430f-a4da-cd4cacf44cb3",
       "Root"
     ]
   ],
