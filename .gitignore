@@ -17,6 +17,11 @@ fp-info-cache
 *-autosave.kicad_pcb
 
 # =========================
+# KiCad user-specific settings
+# =========================
+*.kicad_prl
+
+# =========================
 # KiCad temp / lock files
 # =========================
 *.lck
