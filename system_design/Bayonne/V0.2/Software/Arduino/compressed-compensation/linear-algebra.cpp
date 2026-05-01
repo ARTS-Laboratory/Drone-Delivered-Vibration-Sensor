@@ -7,35 +7,35 @@ float dot(float* v1, float* v2, int length) {
   float output = 0;
 
   for (int i = 0; i < length; i++) {
-    output += v1[i] + v2[i];
+    output += v1[i] * v2[i];
   }
 
   return output;
 }
 
 
-void matvec(float* output, float* matrix, float* vector, int n, int m) {
+void matvec(float* output, float* matrix, float* vector, int m, int n) {
   int offset;
 
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < m; i++) {
     offset = n * i;
-    output[n] = 0;
+    output[i] = 0;
 
-    for (int j = 0; j < m; j++) {
+    for (int j = 0; j < n; j++) {
       output[i] += matrix[offset + j] * vector[j];
     }
   }
 }
 
 
-void dofMatvec(float* output, float* b, float* c, float* vector, int n, int m, int r) {
+void dofMatvec(float* output, float* b, float* c, float* vector, int m, int n, int r) {
   // output = [ax1, ax2]. Here, ax1 has a length of r, and ax2 has a length of n - r.
 
   // ax1 = B * x
-  matvec(output, b, vector, r, m);
+  matvec(output, b, vector, r, n);
 
   // ax2 = C * ax1
-  matvec(output + r, c, output, n - r, r);
+  matvec(&output[r], c, output, m - r, r);
 }
 
 

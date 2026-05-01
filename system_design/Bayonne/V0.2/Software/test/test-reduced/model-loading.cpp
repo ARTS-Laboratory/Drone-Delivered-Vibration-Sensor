@@ -8,8 +8,9 @@
 using std::ifstream;
 
 void loadWeights(float* lstmWeights, float* lstmBiases, float* denseWeights,
-                 float* denseBias, int numUnits, int inputSize) {
-  ifstream w("./model_binaries/lstm/w.dat", std::ios::binary);
+                 float* denseBias, int numUnits, int inputSize, int rank) {
+  ifstream b("./model_binaries/reduced-lstm/b.dat", std::ios::binary);
+  ifstream c("./model_binaries/reduced-lstm/c.dat", std::ios::binary);
   
   ifstream bI("./model_binaries/lstm/bI.dat", std::ios::binary);
   ifstream bF("./model_binaries/lstm/bF.dat", std::ios::binary);
@@ -19,25 +20,24 @@ void loadWeights(float* lstmWeights, float* lstmBiases, float* denseWeights,
   ifstream denseW("./model_binaries/dense_top/w.dat", std::ios::binary);
   ifstream denseB("./model_binaries/dense_top/b.dat", std::ios::binary);
 
-  int matrixSize = numUnits * (numUnits + inputSize) * 4;
+  int bMatrixSize = rank * (numUnits + inputSize);
+  int cMatrixSize = ((numUnits * 4) - rank) * rank;
   int typeSize = sizeof(float);
 
   // Read the LSTM weight matrices
-  w.read(reinterpret_cast<char*>(&lstmWeights[0]),
-                                 matrixSize * typeSize);
+  b.read(reinterpret_cast<char*>(lstmWeights), bMatrixSize * typeSize);
+  c.read(reinterpret_cast<char*>(&lstmWeights[bMatrixSize]), cMatrixSize * typeSize);
 
   // Read the LSTM bias
-  bI.read(reinterpret_cast<char*>(&lstmBiases[0]),
-                                  numUnits * typeSize);
+  bI.read(reinterpret_cast<char *>(&lstmBiases[0]), numUnits * typeSize);
 
-  bF.read(reinterpret_cast<char*>(&lstmBiases[numUnits]),
-                                  numUnits * typeSize);
+  bF.read(reinterpret_cast<char *>(&lstmBiases[numUnits]), numUnits * typeSize);
 
-  bC.read(reinterpret_cast<char*>(&lstmBiases[numUnits * 2]),
-                                  numUnits * typeSize);
+  bC.read(reinterpret_cast<char *>(&lstmBiases[numUnits * 2]),
+                                   numUnits * typeSize);
 
-  bO.read(reinterpret_cast<char*>(&lstmBiases[numUnits * 3]),
-                                  numUnits * typeSize);
+  bO.read(reinterpret_cast<char *>(&lstmBiases[numUnits * 3]),
+                                   numUnits * typeSize);
 
   // Read the dense weights and biases
   denseW.read(reinterpret_cast<char*>(denseWeights), numUnits * typeSize);

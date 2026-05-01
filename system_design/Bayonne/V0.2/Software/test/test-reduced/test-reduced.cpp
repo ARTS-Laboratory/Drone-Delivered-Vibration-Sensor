@@ -2,9 +2,9 @@
 
 // Simple testbench for the LSTM model
 
-#include "test-lstm.h"
-#include "../../Arduino/signal-compensation/lstm.h"
-#include "../../Arduino/signal-compensation/linear-algebra.h"
+#include "test-reduced.h"
+#include "../../Arduino/compressed-compensation/reduced-lstm.h"
+#include "../../Arduino/compressed-compensation/linear-algebra.h"
 #include "model-loading.h"
 #include <fstream>
 #include <iostream>
@@ -23,7 +23,7 @@ using std::string;
 int main() {
   vector<float> inputData;
 
-  ifstream sampleData("measured.csv");
+  ifstream sampleData("measured_reduced.csv");
 
   if (!sampleData.is_open()) {
     cout << "The data file cannot be opened.\n";
@@ -44,7 +44,7 @@ int main() {
 
   vector<float> lstmTrue;
 
-  ifstream trueData("uncompressed.csv");
+  ifstream trueData("reduced.csv");
   while (std::getline(trueData, line)) {
     try {
       lstmTrue.push_back(std::stof(line));
@@ -60,27 +60,33 @@ int main() {
   
   int numUnits = 50;
   int inputSize = 1;
+  int rank = 50;
+  int m = numUnits * 4;
+  int n = numUnits + inputSize;
 
   // Dynamically declared, just like it is on edge.
-  float* lstmWeights = new float[4 * numUnits * (numUnits + inputSize)];
+  float* lstmWeights = new float[rank * n + ((m - rank) * rank)];
   float* lstmBias = new float[4 * numUnits];
   float* denseWeights = new float[numUnits];
   float* denseBias = new float;
 
   float* bI = &lstmBias[0];
-  float* bF = &lstmBias[NUMUNITS];
-  float* bC = &lstmBias[2 * NUMUNITS];
-  float* bO = &lstmBias[3 * NUMUNITS];
+  float* bF = &lstmBias[numUnits];
+  float* bC = &lstmBias[2 * numUnits];
+  float* bO = &lstmBias[3 * numUnits];
 
   cout << "Loading weights...\n";
   loadWeights(lstmWeights, lstmBias, denseWeights, denseBias, numUnits,
-              inputSize);
+              inputSize, rank);
+
+  float* b = lstmWeights;
+  float* c = &lstmWeights[rank * (numUnits + inputSize)];
 
   cout << "Weights loaded.\n";
 
-  LSTM* lstm = new LSTM(NUMUNITS, INPUTSIZE, lstmWeights, bI, bF, bC, bO);
+  ReducedLSTM *lstm =
+      new ReducedLSTM(numUnits, inputSize, rank, b, c, bI, bF, bC, bO);
 
-  // float lstmOut[50];
   float* lstmOut = new float[50];
 
   for (long unsigned int i = 0; i < inputData.size(); i++) {
@@ -88,7 +94,7 @@ int main() {
                                  denseWeights, denseBias);
   }
 
-  ofstream outputFile("test-lstm-out.csv");
+  ofstream outputFile("test-reduced-out.csv");
 
   for (long unsigned int i = 0; i < inputData.size(); i++) {
     outputFile << lstmTrue[i] << ",  " << outputData[i] << "\n";
@@ -100,7 +106,7 @@ int main() {
 }
 
 
-float runInference(float* input, LSTM* lstm, float* lstmOut, int numUnits,
+float runInference(float* input, ReducedLSTM* lstm, float* lstmOut, int numUnits,
                    float* denseWeights, float* denseBias) {
   lstm->step(lstmOut, input);
   

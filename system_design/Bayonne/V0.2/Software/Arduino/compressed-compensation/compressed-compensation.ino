@@ -1,8 +1,8 @@
 // Copyright ARTS Lab, 2024
 // Smart sensing node with online signal compensation
 
-#include "signal-compensation.h"
-#include "lstm.h"
+#include "compressed-compensation.h"
+#include "reduced-lstm.h"
 #include "linear-algebra.h"
 #include <SD.h>
 #include <SPI.h>
@@ -26,16 +26,19 @@ constexpr uint32_t FREQUENCY = 400;  // Sampling rate of the accelerometer (Hz)
 constexpr uint32_t DELAY_TIME =
   static_cast<uint32_t>(((1.0 / FREQUENCY) * 1000000));  // Period (us)
 
-SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, OperationMode::MODE3, true);
+SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, OperationMode::MODE3, false);
 float data[DATA_POINTS];
 
-LSTM* lstm;
+ReducedLSTM* lstm;
 float lstmOutput[NUMUNITS];
 
 float* lstmWeights;
 float* lstmBiases;
 float* denseWeights;
 float* denseBias;
+
+float* lstmB;
+float* lstmC;
 
 float* bI;
 float* bF;
@@ -63,15 +66,23 @@ void setup() {
   lstmBiases = new float[NUMUNITS * 4];
   denseWeights = new float[NUMUNITS];
   denseBias = new float;
+
+  // We'll hard-code rank 50 for now. In the future, we'll load this from the SD
+  // card as well.
+  int rank = 50;
+
   loadWeights(lstmWeights, lstmBiases, denseWeights, denseBias, NUMUNITS,
-              INPUTSIZE);
+              INPUTSIZE, rank);
+
+  lstmB = lstmWeights;
+  lstmC = &lstmWeights[rank * (NUMUNITS + INPUTSIZE)];
 
   bI = &lstmBiases[0];
   bF = &lstmBiases[NUMUNITS];
   bC = &lstmBiases[2 * NUMUNITS];
   bO = &lstmBiases[3 * NUMUNITS];
 
-  lstm = new LSTM(NUMUNITS, INPUTSIZE, lstmWeights, bI, bF, bC, bO);
+  lstm = new ReducedLSTM(NUMUNITS, INPUTSIZE, rank, lstmB, lstmC, bI, bF, bC, bO);
 
   Serial.println("Model loaded.");
   sca3300.initChip();
@@ -164,15 +175,21 @@ float runInference(float* input) {
 
 
 void loadWeights(float* lstmWeights, float* lstmBiases, float* denseWeights,
-                 float* denseBias, int numUnits, int inputSize) {
-  int matrixSize = (numUnits + inputSize) * numUnits * 4;
+                 float* denseBias, int numUnits, int inputSize, int rank) {
+  int bMatrixSize = rank * (numUnits + inputSize);
+  int cMatrixSize = ((numUnits * 4) - rank) * rank;
 
   // Here, the size of the buffer is the number of elements times 4. This is
   // because the elements are single precision floats, which are four bytes long.
 
   // Load LSTM weight matrices.
-  File file = SD.open("model_binaries/lstm/w.dat", FILE_READ);
-  file.read(&lstmWeights[0], matrixSize * 4);
+  File file = SD.open("model_binaries/reduced-lstm/b.dat", FILE_READ);
+  file.read(&lstmWeights[0], bMatrixSize * 4);
+
+  file.close();
+
+  file = SD.open("model_binaries/reduced-lstm/c.dat", FILE_READ);
+  file.read(&lstmWeights[bMatrixSize], cMatrixSize * 4);
 
   file.close();
 

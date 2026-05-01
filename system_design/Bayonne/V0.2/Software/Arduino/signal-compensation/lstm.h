@@ -3,11 +3,12 @@
 #ifndef LSTM_H
 #define LSTM_H
 
-// This LSTM expects U and W to be concatenated, then flattened.
+// This LSTM expects W and U to be concatenated, then flattened.
+// Weight matrices should be in the order [Wi Wf Wc Wo].
 class LSTM {
  public:
-   LSTM(int numUnits, int inputSize, float* wI, float* wF, float* wC, float* wO,
-        float* bI, float* bF, float* bC, float* bO);
+   LSTM(int numUnits, int inputSize, float* w, float* bI, float* bF, float* bC,
+        float* bO);
 
    void step(float *destination, float *input);
 
@@ -16,11 +17,9 @@ class LSTM {
  private:
   int numUnits, inputSize;
 
-  float* wI;
-  float* wF;
-  float* wC;
-  float* wO;
+  float* w;
 
+  float* gates;
   float* iGate;
   float* fGate;
   float* cGate;

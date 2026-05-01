@@ -6,8 +6,8 @@
 // This LSTM expects B and C to be flattened and concatenated.
 class ReducedLSTM {
  public:
-   ReducedLSTM(int numUnits, int inputSize, int rank, float* w, float* bI,
-               float* bF, float* bC, float* bO);
+   ReducedLSTM(int numUnits, int inputSize, int rank, float* b, float* c,
+               float* bI, float* bF, float* bC, float* bO);
 
    void step(float *destination, float *input);
 
@@ -16,7 +16,8 @@ class ReducedLSTM {
  private:
   int numUnits, inputSize, rank;
 
-  float* w;
+  float* b;
+  float* c;
 
   float* gates;
   float* iGate;

@@ -7,7 +7,7 @@
 #define INPUTSIZE 1
 
 #include <SCA3300.h>
-#include "lstm.h"
+#include "reduced-lstm.h"
 
 using sca3300_library::OperationMode;
 
