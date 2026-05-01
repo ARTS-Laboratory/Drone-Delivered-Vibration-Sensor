@@ -1,0 +1,32 @@
+# Forth V0.1
+
+A direct copy of Brooklyn V0.3 which included RTC and SD card, with no RF communication
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
