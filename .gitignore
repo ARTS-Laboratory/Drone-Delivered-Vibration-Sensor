@@ -1,0 +1,29 @@
+# =========================
+# Archives
+# =========================
+*.zip
+
+# =========================
+# KiCad cache files
+# =========================
+fp-cache
+fp-info-cache
+
+# =========================
+# KiCad backups & autosaves
+# =========================
+*.bak
+*-autosave.kicad_sch
+*-autosave.kicad_pcb
+
+# =========================
+# KiCad temp / lock files
+# =========================
+*.lck
+*.tmp
+
+# =========================
+# OS junk
+# =========================
+.DS_Store
+Thumbs.db
