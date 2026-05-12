@@ -132,8 +132,8 @@ void writeSDConverted(int16_t* data,
   if (dataFile) {
     for (size_t i = 0; i < DATA_POINTS; ++i) {
       float convertedData =
-        SCA3300::convertRawAccelToAccel(data[i], operationMode) - 1;
-
+        -(SCA3300::convertRawAccelToAccel(data[i], operationMode) - 1);
+        // negative symbol above to account for flipped axis
       // Record raw data
       dataFile.print(convertedData, 32);
       dataFile.println();
