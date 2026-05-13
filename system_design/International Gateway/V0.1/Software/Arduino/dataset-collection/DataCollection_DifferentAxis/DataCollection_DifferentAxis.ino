@@ -48,7 +48,9 @@ constexpr uint32_t DELAY_TIME =
   static_cast<uint32_t>(((1.0 / FREQUENCY) * 1000000));  // Period (us)
 
 // top sensor package -> Y-axis ; bottom sensor package -> Z-axis
-const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Y;
+// When uploading this code, comment out whichever axis you're not using depending on top or bottom sensor
+//const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Y;
+const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Z;
 
 SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, OperationMode::MODE3, true);
 int16_t data[DATA_POINTS];
@@ -132,7 +134,7 @@ void writeSDConverted(int16_t* data,
   if (dataFile) {
     for (size_t i = 0; i < DATA_POINTS; ++i) {
       float convertedData =
-        -(SCA3300::convertRawAccelToAccel(data[i], operationMode) - 1);
+        -SCA3300::convertRawAccelToAccel(data[i], operationMode);
         // negative symbol above to account for flipped axis
       // Record raw data
       dataFile.print(convertedData, 32);
