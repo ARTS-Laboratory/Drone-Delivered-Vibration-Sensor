@@ -41,7 +41,7 @@ const uint8_t SD_CHIP_SELECT = 4;  // PCB Chip Select
 const uint8_t TRIGGER_PIN = 2;
 
 constexpr uint32_t SPI_SPEED = 2000000;
-constexpr size_t DATA_POINTS = 12000; // 12,000 is 30 sec, 120,000 is 5 min
+constexpr size_t DATA_POINTS = 120000; // 12,000 is 30 sec, 120,000 is 5 min
 
 constexpr uint32_t FREQUENCY = 400;  // Sampling rate of the accelerometer (Hz)
 constexpr uint32_t DELAY_TIME =
