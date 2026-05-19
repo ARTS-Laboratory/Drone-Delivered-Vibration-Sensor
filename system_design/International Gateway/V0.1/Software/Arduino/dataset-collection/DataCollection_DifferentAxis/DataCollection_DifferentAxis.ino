@@ -47,8 +47,9 @@ constexpr uint32_t FREQUENCY = 400;  // Sampling rate of the accelerometer (Hz)
 constexpr uint32_t DELAY_TIME =
   static_cast<uint32_t>(((1.0 / FREQUENCY) * 1000000));  // Period (us)
 
-// top sensor package -> Y-axis ; bottom sensor package -> Z-axis
+// top sensor package -> Z-axis ; bottom sensor package -> Y-axis
 // When uploading this code, comment out whichever axis you're not using depending on top or bottom sensor
+// Make sure you add a negative sign in front of "SCA3300::convertRawAccelToAccel(data[i], operationMode);" when doing the y-axis (line 138)
 //const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Y;
 const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Z;
 
@@ -134,7 +135,7 @@ void writeSDConverted(int16_t* data,
   if (dataFile) {
     for (size_t i = 0; i < DATA_POINTS; ++i) {
       float convertedData =
-        -SCA3300::convertRawAccelToAccel(data[i], operationMode);
+        SCA3300::convertRawAccelToAccel(data[i], operationMode);
         // negative symbol above to account for flipped axis
       // Record raw data
       dataFile.print(convertedData, 32);
