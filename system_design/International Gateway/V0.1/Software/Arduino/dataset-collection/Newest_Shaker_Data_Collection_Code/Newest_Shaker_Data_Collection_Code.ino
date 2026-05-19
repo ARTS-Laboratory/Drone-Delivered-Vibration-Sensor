@@ -4,11 +4,11 @@
 
 #include <SCA3300.h>
 #include <SD.h>
+#include <SPI.h>
 
-constexpr uint8_t SCA3300_CHIP_SELECT = 5; //PCB Chip Select
-//const uint8_t SCA3300_CHIP_SELECT = 10; //Development Board Chip Select
-constexpr uint8_t SD_CHIP_SELECT = 10;
-//constexpr uint8_t LED_PIN = 2;
+constexpr uint8_t SCA3300_CHIP_SELECT = 1; 
+constexpr uint8_t SD_CHIP_SELECT = 4;
+constexpr uint8_t LED_PIN = 3;
 constexpr uint32_t SPI_SPEED = 2000000; // typ. f_sck = 2 MHz
 //const size_t DATA_POINT = 222220;
 constexpr size_t DATA_POINT = 74000; // 74295 Samples
@@ -17,12 +17,12 @@ constexpr uint8_t TRIGGER_PIN = 2;
 // Set axis and sign depending on which sensor you are uploading code to
 
 // Top sensor package:
-// const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Z;
-// constexpr int AXIS_SIGN = 1;
+const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Z;
+constexpr int AXIS_SIGN = 1;
 
 // Bottom sensor package:
-// const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Y;
-// constexpr int AXIS_SIGN = -1;
+//const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Y;
+//onstexpr int AXIS_SIGN = -1;
 
 
 //constexpr uint32_t DELAY_TIME = 0;
@@ -45,8 +45,7 @@ void writeFileCounter(unsigned int val);
 
 void setup() {
 	Serial.begin(9600);
-	//pinMode(LED_PIN, OUTPUT);
-
+	pinMode(LED_PIN, OUTPUT);
   pinMode(TRIGGER_PIN, INPUT);
  
 	Serial.println("Initializing SD Card...");
@@ -56,6 +55,7 @@ void setup() {
 	}
 	Serial.println("SD Card Initialized.");
 	sca3300.initChip();
+	pinMode(LED_PIN, OUTPUT);
   
   fileNameCount = readFileCounter();
   Serial.print("Starting file counter at: ");
@@ -63,12 +63,13 @@ void setup() {
 }
 
 void loop() {
-  
+
   while (digitalRead(TRIGGER_PIN) == LOW) {
     // Do nothing
   }
 
-	//digitalWrite(LED_PIN, HIGH);
+	digitalWrite(LED_PIN, HIGH);
+
 	int16_t data[DATA_POINT];
 	uint32_t timeStamps[DATA_POINT];
 
@@ -79,7 +80,7 @@ void loop() {
 	sprintf(fileName, "DATA%03d.csv", fileNameCount);
 	writeSDConverted(data, timeStamps, sca3300.getOperationMode(), fileName);
 	//printDataRaw(data, timeStamps);
-	printDataConverted(data, timeStamps, sca3300.getOperationMode());
+	//printDataConverted(data, timeStamps, sca3300.getOperationMode());
 }
 
 unsigned int readFileCounter() {
@@ -147,7 +148,14 @@ void writeSDConverted(int16_t* data, uint32_t* timeStamps, sca3300_library::Oper
     ++fileNameCount;
     writeFileCounter(fileNameCount);
 		Serial.println("Finish Writing to SD Card");
-		//digitalWrite(LED_PIN, LOW);
+		digitalWrite(LED_PIN, LOW);
+		delay(500);
+		for (int i = 0; i < 5; ++i) {
+			digitalWrite(LED_PIN, HIGH);
+			delay(200);
+			digitalWrite(LED_PIN, LOW);
+			delay(200);
+		}
 	}
 	else {
 		Serial.printf("%s NOT Created", fileName);
