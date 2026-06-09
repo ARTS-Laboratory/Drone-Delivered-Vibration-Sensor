@@ -5,11 +5,11 @@
 #include <SCA3300.h>
 #include <SD.h>
 
-constexpr uint8_t SCA3300_CHIP_SELECT = 5; //PCB Chip Select
+constexpr uint8_t SCA3300_CHIP_SELECT = 1; //PCB Chip Select
 //const uint8_t SCA3300_CHIP_SELECT = 10; //Development Board Chip Select
-constexpr uint8_t SD_CHIP_SELECT = 10;
-constexpr uint8_t LED_PIN = 2;
-constexpr uint8_t WRITE_PIN = 3;
+constexpr uint8_t SD_CHIP_SELECT = 4;
+constexpr uint8_t LED_PIN = 3;
+constexpr uint8_t WRITE_PIN = 2;
 constexpr uint32_t SPI_SPEED = 2000000; // typ. f_sck = 2 MHz
 //const size_t DATA_POINT = 222220;
 constexpr size_t DATA_POINT = 74000; // 74295 Samples
@@ -77,6 +77,7 @@ void setup() {
   Serial.print("Starting file counter at: ");
   Serial.println(fileNameCount);
 }
+
 
 void loop() {
 	digitalWrite(LED_PIN, HIGH);
