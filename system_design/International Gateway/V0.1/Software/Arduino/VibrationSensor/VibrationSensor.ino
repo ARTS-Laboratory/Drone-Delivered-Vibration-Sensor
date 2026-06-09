@@ -64,6 +64,7 @@ void printDataConverted(int16_t* data, uint32_t* timeStamps, sca3300_library::Op
 void setup() {
 	Serial.begin(9600);
 	pinMode(LED_PIN, OUTPUT);
+	pinMode(WRITE_PIN, INPUT);
  
 	Serial.println("Initializing SD Card...");
 	if (!SD.begin(SD_CHIP_SELECT)) {

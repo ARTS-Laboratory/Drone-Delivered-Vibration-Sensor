@@ -54,7 +54,7 @@ constexpr uint32_t DELAY_TIME =
 const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Z;
 
 SCA3300 sca3300(SCA3300_CHIP_SELECT, SPI_SPEED, OperationMode::MODE3, true);
-int16_t data[DATA_POINTS];
+
 
 void setup() {
   delay(5000);
@@ -98,6 +98,8 @@ void loop() {
   }
 
   digitalWrite(LED_PIN, HIGH);
+  int16_t data[DATA_POINTS];
+  uint32_t timeStamps[DATA_POINTS];
   recordData(data, DELAY_TIME);
   char fileName[20];
   sprintf(fileName, "DATA%03d.csv", fileNameCount);
@@ -108,21 +110,14 @@ void loop() {
   delay(15000);
 }
 
-void recordData(int16_t* data, uint32_t delayTime) {
-  unsigned long endTime;
-
+void recordData(int16_t* data, uint32_t * timeStamps, uint32_t delayTime) {
   Serial.println("Start Recording");
  
   for (size_t i = 0; i < DATA_POINTS; ++i) {
-    endTime = micros() + delayTime;
-
     data[i] = sca3300.getAccelRaw(MEASURE_AXIS);
-
-    while (micros() < endTime) {
-      // Do nothing
-    }
+    timeStamps[i] = micros();
+    delayMicroseconds(delayTime);
   }
-
   Serial.println("Finish Recording");
 }
 
