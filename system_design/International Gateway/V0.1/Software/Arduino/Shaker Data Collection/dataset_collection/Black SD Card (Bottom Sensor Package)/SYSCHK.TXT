@@ -1,0 +1,20 @@
+SYSTEM CHECK
+SD card checked successfully.
+RTC checked successfully.
+Timestamp: 2000-1-1 0:4:22
+Accelerometer checked successfully.
+X Axis: 0.0000000
+Y Axis: 0.0000000
+Z Axis: 0.0000000
+Micros Timestamp: 1782346
+System check completed successfully.
+SYSTEM CHECK
+SD card checked successfully.
+RTC checked successfully.
+Timestamp: 2000-1-1 0:7:43
+Accelerometer checked successfully.
+X Axis: 0.0000000
+Y Axis: 0.0000000
+Z Axis: 0.0000000
+Micros Timestamp: 45194690
+System check completed successfully.
