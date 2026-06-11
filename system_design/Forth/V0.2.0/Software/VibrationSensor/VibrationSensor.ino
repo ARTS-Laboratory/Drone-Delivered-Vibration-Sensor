@@ -19,7 +19,7 @@ constexpr uint8_t LED_PIN = 3;
 constexpr uint8_t WRITE_PIN = 2;
 
 constexpr uint32_t SPI_SPEED = 2000000;
-constexpr size_t DATA_POINT = 4000;
+constexpr size_t DATA_POINT = 74000;
 constexpr uint32_t DELAY_TIME = 6722;
 
 constexpr uint32_t LED_FLASH_INTERVAL = 250;
