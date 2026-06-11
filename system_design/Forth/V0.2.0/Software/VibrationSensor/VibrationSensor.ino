@@ -24,6 +24,16 @@ constexpr uint32_t DELAY_TIME = 6722;
 
 constexpr uint32_t LED_FLASH_INTERVAL = 250;
 
+// Set axis and sign depending on which sensor you are uploading code to
+
+// Top sensor package:
+//const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Z;
+//constexpr int AXIS_SIGN = 1;
+
+// Bottom sensor package:
+const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Y;
+constexpr int AXIS_SIGN = -1;
+
 sca3300_library::SCA3300 sca3300(
   SCA3300_CHIP_SELECT,
   SPI_SPEED,
@@ -114,7 +124,7 @@ void recordData(int16_t* data, uint32_t* timeStamps, uint32_t delayTime) {
   Serial.println("Start Recording");
 
   for (size_t i = 0; i < DATA_POINT; ++i) {
-    data[i] = sca3300.getAccelRaw(sca3300_library::Axis::Z);
+    data[i] = sca3300.getAccelRaw(MEASURE_AXIS);
     timeStamps[i] = micros();
     delayMicroseconds(delayTime);
   }
