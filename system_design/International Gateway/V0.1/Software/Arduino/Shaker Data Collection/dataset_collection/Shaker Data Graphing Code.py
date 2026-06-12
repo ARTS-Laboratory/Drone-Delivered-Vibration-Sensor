@@ -9,7 +9,7 @@ plt.close('all')
 
 
 #%% Load data
-file1 = 'D:/005.csv'
+file1 = 'D:/006.csv'
 
 
 #%% Function to load + process data
@@ -53,7 +53,7 @@ plt.plot(f1, A1_dB)
 plt.grid(True)
 plt.ylabel('Amplitude (dB)')
 plt.xlabel('Frequency (Hz)')
-plt.title('005 FFT Spectrum Comparison')
+plt.title('006 FFT Spectrum Comparison')
 # Zoom near region of interest
 plt.xlim(0,200) # up to Nyquist (fs/2 = 200)
 plt.ylim(-170,-30)
@@ -62,16 +62,16 @@ peak_idx1 = np.argmax(A1)
 plt.plot(f1[peak_idx1], A1_dB[peak_idx1], 'ro')
 plt.text(f1[peak_idx1] + 2, A1_dB[peak_idx1], f'{f1[peak_idx1]:.1f} Hz', color = 'red')
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_FFT_Spectrum_Comparison.png')
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/006_FFT_Spectrum_Comparison.png')
 
 plt.figure(2)
 plt.plot(tt1, ac1)
 plt.xlabel('Time (s)')
 plt.ylabel('Acceleration (g)')
-plt.xlim(0,170)
-plt.title('005  Acceleration Comparison')
+plt.xlim(100,100.5)
+plt.title('006 Zoomed Acceleration Comparison')
 plt.tight_layout() # makes sure plot is neat and sizings work together
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_Acceleration_Comparison.png', dpi=300)
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/006_100_Acceleration_Comparison.png', dpi=300)
 
 # # Spectrogram
 # plt.figure(3, figsize=(6.5,3))
@@ -136,7 +136,7 @@ plt.plot(f1, A1_smooth)
 plt.grid(True)
 plt.ylabel('Amplitude (dB)')
 plt.xlabel('Frequency (Hz)')
-plt.title('005 FFT Smoothed Spectrum Comparison')
+plt.title('006 FFT Smoothed Spectrum Comparison')
 # Zoom near region of interest
 plt.xlim(0,200) # up to Nyquist (fs/2 = 200)
 plt.ylim(-170,-30)
@@ -145,4 +145,4 @@ peak_idx1 = np.argmax(A1_smooth)
 plt.plot(f1[peak_idx1], A1_smooth[peak_idx1], 'ro')
 plt.text(f1[peak_idx1] + 2, A1_smooth[peak_idx1], f'{f1[peak_idx1]:.1f} Hz', color = 'red')
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_FFT_Smoothed_Spectrum_Comparison.png')
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/006_FFT_Smoothed_Spectrum_Comparison.png')

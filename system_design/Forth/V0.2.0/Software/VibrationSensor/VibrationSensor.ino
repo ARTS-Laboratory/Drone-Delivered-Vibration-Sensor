@@ -19,7 +19,7 @@ constexpr uint8_t LED_PIN = 3;
 constexpr uint8_t WRITE_PIN = 2;
 
 constexpr uint32_t SPI_SPEED = 2000000;
-constexpr size_t DATA_POINT = 69200;
+constexpr size_t DATA_POINT = 69000;
 float targetFrequency = 400.0;
 uint32_t DELAY_TIME = (1000000.0 / targetFrequency) - 35.0;
 //constexpr uint32_t DELAY_TIME = 2465;
