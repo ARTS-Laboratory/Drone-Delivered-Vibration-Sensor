@@ -1,9 +1,14 @@
+# Copyright 2026 ARTS_LAB
+
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import tensorflow as tf
 from scipy import signal
 from scipy.signal import butter, filtfilt
+from sklearn.preprocessing import StandardScaler
+from tensorflow import keras
 
 
 plt.close('all')
@@ -67,6 +72,63 @@ def process_data(filepath):
 A1_original, A1_filtered,
 A1_original_dB, A1_filtered_dB) = process_data(file1)
 
+
+original = ac1
+filtered = ac1_filtered
+input_scaler = StandardScaler()
+target_scaler = StandardScaler()
+filtered_scaled = input_scaler.fit_transform(filtered.reshape(-1,1))
+original_scaled = target_scaler.fit_transform(original.reshape(-1,1))
+
+lstm_window_size = 400 # how much history the network sees
+X = []
+y = []
+for i in range(lstm_window_size, len(filtered_scaled)):
+    X.append(filtered_scaled[i-lstm_window_size:i])
+    y.append(original_scaled[i])
+
+X = np.array(X)
+y = np.array(y)
+print("X shape:", X.shape)
+print("y shape:", y.shape)
+print("X[1000] shape:", X[1000].shape)
+print("y[1000]:", y[1000])
+print("First target value:")
+print(y[0])
+
+
+# [0]: total # of training examples, [1]: # of values per example, 1: 1 feature (acceleration)
+X = np.reshape(X, (X.shape[0], X.shape[1], 1))
+
+# Split train/test needed. if we train on everything, train = test, nothing is learned. train teaches, test evaluates
+split = int(0.8 * len(X)) # train first 80%, test last 20%
+    # if 69,000 samples & window size = 400, len(X) = 68600 training windows
+X_train = X[:split] # X_train = Beginning -> split (# value)
+X_test = X[split:] # X_test = split (# value) -> End
+
+y_train = y[:split]
+y_test = y[split:]
+
+print("X_train:", X_train.shape)
+print("X_test:", X_test.shape)
+
+print("y_train:", y_train.shape)
+print("y_test:", y_test.shape)
+
+# lstm model
+model = keras.models.Sequential()
+# 50 units, 1 layer
+model.add(keras.layers.LSTM(50, input_shape=(X_train.shape[1], 1)))
+model.add(keras.layers.Dense(1))
+model.compile(optimizer = 'adam', loss = 'MSE') # tells it how to measure success so it can adjust it's answers
+#Train
+history = model.fit(X_train, y_train, epochs=20, batch_size=32)
+predictions = model.predict(X_test)
+# turns the units back to what we want
+predictions = target_scaler.inverse_transform(predictions)
+y_test_actual = target_scaler.inverse_transform(y_test.reshape(-1,1))
+
+
 # size of plot figure (think of it like the measuremetns of a sheet of paper)
 plt.figure(figsize=(6.5,3))
 
@@ -89,9 +151,9 @@ plt.ylim(-170,-30)
 plt.tight_layout()
 plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/006_FFT_Spectrum_Comparison.png')
 
-window_size = 10
-A1_original_smooth = np.convolve(A1_original_dB, np.ones(window_size)/window_size, mode='same')
-A1_filtered_smooth = np.convolve(A1_filtered_dB, np.ones(window_size)/window_size, mode='same')
+fft_smoothing_window = 10
+A1_original_smooth = np.convolve(A1_original_dB, np.ones(fft_smoothing_window)/fft_smoothing_window, mode='same')
+A1_filtered_smooth = np.convolve(A1_filtered_dB, np.ones(fft_smoothing_window)/fft_smoothing_window, mode='same')
 
 plt.figure(5)
 plt.plot(f1, A1_original_smooth, label='Original')
@@ -109,6 +171,7 @@ plt.ylim(-170,-30)
 # plt.plot(f1[peak_idx1], A1_filtered_smooth[peak_idx1], 'ro')
 # plt.text(f1[peak_idx1] + 2, A1_filtered_smooth[peak_idx1], f'{f1[peak_idx1]:.1f} Hz', color = 'red')
 plt.tight_layout()
+plt.show()
 plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/006_FFT_Smoothed_Spectrum_Comparison.png')
 
 plt.figure(2)
@@ -123,57 +186,21 @@ plt.grid(True)
 plt.tight_layout() # makes sure plot is neat and sizings work together
 plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/006_Acceleration_Comparison.png', dpi=300)
 
+plt.figure(6)
+plt.plot(y_test_actual, label = 'Original')
+plt.plot(predictions, label = 'Predicted')
+plt.legend()
+plt.xlabel('Sample')
+plt.ylabel('Acceleration')
+plt.title('Original vs LSTM Prediction')
+plt.tight_layout()
+plt.show()
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/Original_vs_LSTM_Prediction.png', dpi=300)
 
-# # Spectrogram
-# plt.figure(3, figsize=(6.5,3))
-# f_spec, t_spec, Sxx = signal.spectrogram(ac1, fs=1/np.mean(np.diff(tt1)), nperseg=512, noverlap=256)
-# plt.pcolormesh(t_spec, f_spec, 10*np.log10(Sxx + 1e-12), shading='gouraud')
-# plt.colorbar(label='Power (dB)')
-# plt.ylabel('Frequency (Hz)')
-# plt.xlabel('Time (s)')
-# plt.title('000 Spectrogram')
-# plt.ylim(0,40)
-# plt.tight_layout()
-# plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/000Spectrogram.png', dpi=300)
-
-# # Frequency Response Function (FRF)
-# N = min(len(ac1), len(ac2))
-# x = ac1[:N] # input
-# y = ac2[:N] # output
-# X = np.fft.fft(x)
-# Y = np.fft.fft(y)
-# f = np.fft.fftfreq(N, d=dt)
-# # keep only positive frequencies
-# mask = f >= 0 
-# f_frf = f[mask]
-# X = X[mask]
-# Y = Y[mask]
-# H = Y / (X + 1e-12)
-# H_mag = np.abs(H)
-# H_mag_dB = 20 * np.log10(H_mag + 1e-12)
-# H_phase = np.angle(H, deg=True)
-
-# # Plot FRF Magnitude
-# plt.figure(3, figsize=(6.5,3))
-# plt.plot(f_frf, H_mag_dB)
-# plt.grid(True)
-# plt.xlabel('Frequency (Hz)')
-# plt.ylabel('Magnitude (dB)')
-# plt.title('DATA014 Frequency Response Function (Magnitude)')
-# plt.xscale('log')
-# plt.xlim(0.1,21) # Nyquist Freq
-# plt.tight_layout()
-# plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/DATA014_FRF_Magnitude.png', dpi=300)
-
-# Plot FRF Phase
-# plt.figure(4, figsize=(6.5,3))
-# plt.plot(f_frf, H_phase)
-# plt.grid(True)
-# plt.xlabel('Frequency (Hz)')
-# plt.ylabel('Phase (degrees)')
-# plt.title('DATA011 Frequency Response Function (Phase)')
-# plt.xscale('log')
-# plt.xlim(0.1,21)
-# plt.ylim(-200, 200)
-# plt.tight_layout()
-# plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/DATA011_FRF_Phase.png', dpi=300)
+plt.figure(7)
+plt.plot(X[1000])
+plt.title("Example Filtered Window")
+plt.xlabel("Sample")
+plt.ylabel("Scaled Filtered Acceleration")
+plt.tight_layout()
+plt.show()
