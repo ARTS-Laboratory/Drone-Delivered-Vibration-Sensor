@@ -138,11 +138,10 @@ predictions = model.predict(X_test)
 predictions = target_scaler.inverse_transform(predictions)
 y_test_actual = target_scaler.inverse_transform(y_test.reshape(-1,1))
 prediction_time = tt_test[lstm_window_size:]
-np.save('predictions.npy', predictions)
-np.save('prediction_time.npy', prediction_time)
+# np.save('predictions.npy', predictions)
+# np.save('prediction_time.npy', prediction_time)
 pred_fft = np.fft.fft(predictions.flatten())
-# predictions = np.load('predictions.npy')
-# prediction_time = np.load('prediction_time.npy')
+
 
 #LSTM Predictions
 N_pred = len(predictions)
@@ -176,7 +175,7 @@ plt.ylim(-170,-10)
 # plt.text(f1[peak_idx1] + 2, A1_filtered_dB[peak_idx1], f'{f1[peak_idx1]:.1f} Hz', color = 'red')
 plt.tight_layout()
 plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_FFT_Spectrum_Comparison.png')
-plt.show()
+
 
 fft_smoothing_window = 10
 A_test_ref_smooth = np.convolve(A_test_ref_dB, np.ones(fft_smoothing_window)/fft_smoothing_window, mode='same')
@@ -201,7 +200,7 @@ plt.ylim(-170,-10)
 # plt.text(f1[peak_idx1] + 2, A1_filtered_smooth[peak_idx1], f'{f1[peak_idx1]:.1f} Hz', color = 'red')
 plt.tight_layout()
 plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_FFT_Smoothed_Spectrum_Comparison.png')
-plt.show()
+
 
 # plt.figure(2)
 # plt.plot(tt1, ac1, label='Reference')
@@ -221,19 +220,24 @@ plt.plot(tt_test, ac_test_filtered, color='black', label='Filtered', alpha=0.7)
 plt.plot(prediction_time, predictions, color='green', label = 'LSTM Prediction')
 plt.xlabel('Time (s)')
 plt.ylabel('Acceleration (g)')
-plt.title('005 Zoom Acceleration Comparison')
+plt.title('005 Acceleration Comparison')
 plt.legend()
 plt.tight_layout()
 plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_Acceleration_Comparison.png', dpi=300)
-plt.show()
 
-# plt.figure(7)
-# plt.plot(X[1000])
-# plt.title("Example Filtered Window")
-# plt.xlabel("Sample")
-# plt.ylabel("Scaled Filtered Acceleration")
-# plt.tight_layout()
-# plt.show()
+
+plt.figure(7)
+plt.plot(tt_test, ac_test, color='blue', label='Reference', alpha=0.7) # alpha controls transparency of lines
+plt.plot(tt_test, ac_test_filtered, color='black', label='Filtered', alpha=0.7)
+plt.plot(prediction_time, predictions, color='green', label = 'LSTM Prediction')
+plt.xlabel('Time (s)')
+plt.ylabel('Acceleration (g)')
+plt.xlim(100,100.5)
+plt.title('005 Zoom Acceleration Comparison')
+plt.legend()
+plt.tight_layout()
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_Zoom_Acceleration_Comparison.png', dpi=300)
+
 
 plt.figure(8)
 plt.plot(history.history['loss'], label='MSE')
