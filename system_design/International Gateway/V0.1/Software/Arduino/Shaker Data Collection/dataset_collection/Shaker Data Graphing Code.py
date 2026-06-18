@@ -22,8 +22,8 @@ plt.rcParams['ytick.labelsize'] = 12
 plt.rcParams['legend.fontsize'] = 12
 
 #%% Load data
-train_file = 'E:/006.csv'
-test_file = 'E:/005.csv'
+train_file = 'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/006.csv'
+test_file = 'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/005.csv'
 
 
 def highpass_filter(signal, cutoff, fs, order=4):
@@ -182,7 +182,6 @@ plt.ylim(-170,-10)
 # plt.text(f1[peak_idx1] + 2, A1_filtered_dB[peak_idx1], f'{f1[peak_idx1]:.1f} Hz', color = 'red')
 plt.tight_layout()
 plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_100Epoch_FFT_Spectrum_Comparison.png')
-
 
 fft_smoothing_window = 10
 A_test_ref_smooth = np.convolve(A_test_ref_dB, np.ones(fft_smoothing_window)/fft_smoothing_window, mode='same')
