@@ -19,7 +19,7 @@ constexpr uint8_t LED_PIN = 20;
 constexpr uint8_t WRITE_PIN = 2;
 
 constexpr uint32_t SPI_SPEED = 2000000;
-constexpr size_t DATA_POINT = 70000;
+constexpr size_t DATA_POINT = 69000;
 float targetFrequency = 400.0;
 uint32_t DELAY_TIME = (1000000.0 / targetFrequency) - 35.0;
 //constexpr uint32_t DELAY_TIME = 2465;
@@ -29,12 +29,12 @@ constexpr uint32_t LED_FLASH_INTERVAL = 250;
 // Set axis and sign depending on which sensor you are uploading code to
 
 // Top sensor package:
-//const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Z;
-//constexpr int AXIS_SIGN = 1;
+const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Z;
+constexpr int AXIS_SIGN = 1;
 
 // Bottom sensor package:
-const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Y;
-constexpr int AXIS_SIGN = -1;
+//const sca3300_library::Axis MEASURE_AXIS = sca3300_library::Axis::Y;
+//constexpr int AXIS_SIGN = -1;
 
 sca3300_library::SCA3300 sca3300(
   SCA3300_CHIP_SELECT,
