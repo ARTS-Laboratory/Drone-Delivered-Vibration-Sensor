@@ -15,7 +15,7 @@
 
 constexpr uint8_t SCA3300_CHIP_SELECT = 1;
 constexpr uint8_t SD_CHIP_SELECT = 4;
-constexpr uint8_t LED_PIN = 20;
+constexpr uint8_t LED_PIN = 3;
 constexpr uint8_t WRITE_PIN = 2;
 
 constexpr uint32_t SPI_SPEED = 2000000;

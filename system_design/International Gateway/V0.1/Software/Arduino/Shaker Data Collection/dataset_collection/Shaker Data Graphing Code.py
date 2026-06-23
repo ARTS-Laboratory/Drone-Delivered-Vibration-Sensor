@@ -22,7 +22,15 @@ plt.rcParams['ytick.labelsize'] = 12
 plt.rcParams['legend.fontsize'] = 12
 
 #%% Load data
-train_file = 'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/006.csv'
+train_files = [
+    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/006.csv',
+    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/008.csv',
+    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/009.csv',
+    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/010.csv'
+    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/011.csv'
+    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/012.csv'
+    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/013.csv'
+]
 test_file = 'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/005.csv'
 
 
@@ -89,17 +97,21 @@ def process_data(filepath):
 lstm_window_size = 400 # how much history the network sees
 
 ####### TRAIN
-ref = ac_train
-filtered = ac_train_filtered
-input_scaler = StandardScaler()
-target_scaler = StandardScaler()
-filtered_scaled = input_scaler.fit_transform(filtered.reshape(-1,1))
-ref_scaled = target_scaler.fit_transform(ref.reshape(-1,1))
 X_train = []
 y_train = []
-for i in range(lstm_window_size, len(filtered_scaled)):
-    X_train.append(filtered_scaled[i-lstm_window_size:i])
-    y_train.append(ref_scaled[i])
+
+for file in train_files:
+
+    load file
+
+    filtered_scaled = ...
+    ref_scaled = ...
+
+    for i in range(lstm_window_size, len(filtered_scaled)):
+
+        X_train.append(...)
+        y_train.append(...)
+
 X_train = np.array(X_train)
 y_train = np.array(y_train)
 print("X_train shape:", X_train.shape)
@@ -130,7 +142,7 @@ print("X_test:", X_test.shape)
 print("y_train:", y_train.shape)
 print("y_test:", y_test.shape)
 
-# lstm model
+lstm model
 model = keras.models.Sequential()
 # 50 units, 1 layer
 model.add(keras.layers.LSTM(50, input_shape=(X_train.shape[1], 1)))
@@ -141,8 +153,16 @@ history = model.fit(X_train, y_train, epochs=100, batch_size=32)
 # model.save('lstm_model.keras')
 # model = keras.models.load_model('lstm_model.keras')
 predictions = model.predict(X_test)
+
+# Load previously saved model outputs
+# predictions = np.load('predictions.npy')
+# prediction_time = np.load('prediction_time.npy')
+
+# Still needed for comparison plots
+y_test_actual = target_scaler.inverse_transform(y_test.reshape(-1,1))
+
 # turns the units back to what we want
-predictions = target_scaler.inverse_transform(predictions)
+# predictions = target_scaler.inverse_transform(predictions)
 y_test_actual = target_scaler.inverse_transform(y_test.reshape(-1,1))
 prediction_time = tt_test[lstm_window_size:]
 # np.save('predictions.npy', predictions)
@@ -254,7 +274,7 @@ plt.title('Training RMSE vs Epoch')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.show()
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_100Epoch_Training_Error_vs_Epoch.png', dpi=300)
 
 # Frequency Response Function (FRF) Ref vs Filt
 N = min(len(ac_test), len(ac_test_filtered))
