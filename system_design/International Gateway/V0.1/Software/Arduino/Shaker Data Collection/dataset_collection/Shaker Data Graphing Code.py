@@ -26,12 +26,12 @@ train_files = [
     'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/006.csv',
     'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/008.csv',
     'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/009.csv',
-    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/010.csv'
-    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/011.csv'
-    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/012.csv'
+    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/010.csv',
+    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/011.csv',
+    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/012.csv',
     'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/013.csv'
 ]
-test_file = 'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/005.csv'
+test_file = 'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/014.csv'
 
 
 def highpass_filter(signal, cutoff, fs, order=4):
@@ -85,10 +85,7 @@ def process_data(filepath):
             A_ref_dB, A_filtered_dB)
 
 
-#%% Process both files
-(tt_train, ac_train, ac_train_filtered, f_train,
- A_train_ref, A_train_filtered, A_train_ref_dB,
- A_train_filtered_dB) = process_data(train_file)
+# Process test file
 (tt_test, ac_test, ac_test_filtered, f_test,
  A_test_ref, A_test_filtered, A_test_ref_dB,
  A_test_filtered_dB) = process_data(test_file)
@@ -97,20 +94,30 @@ def process_data(filepath):
 lstm_window_size = 400 # how much history the network sees
 
 ####### TRAIN
+input_scaler = StandardScaler()
+target_scaler = StandardScaler()
+
+all_filtered = []
+all_ref = []
+for file in train_files:
+    (tt, ac, ac_filtered, f, A_ref, A_filtered, A_ref_dB, A_filtered_dB) = process_data(file)
+    all_filtered.extend(ac_filtered)
+    all_ref.extend(ac)
+
+all_filtered = np.array(all_filtered).reshape(-1,1)
+all_ref = np.array(all_ref).reshape(-1,1)
+input_scaler.fit(all_filtered)
+target_scaler.fit(all_ref)
+
 X_train = []
 y_train = []
-
 for file in train_files:
-
-    load file
-
-    filtered_scaled = ...
-    ref_scaled = ...
-
+    (tt,ac, ac_filtered, f, A_ref, A_filtered, A_ref_dB, A_filtered_dB) = process_data(file)
+    filtered_scaled = input_scaler.transform(ac_filtered.reshape(-1,1))
+    ref_scaled = target_scaler.transform(ac.reshape(-1,1))
     for i in range(lstm_window_size, len(filtered_scaled)):
-
-        X_train.append(...)
-        y_train.append(...)
+        X_train.append(filtered_scaled[i-lstm_window_size:i])
+        y_train.append(ref_scaled[i])
 
 X_train = np.array(X_train)
 y_train = np.array(y_train)
@@ -142,14 +149,14 @@ print("X_test:", X_test.shape)
 print("y_train:", y_train.shape)
 print("y_test:", y_test.shape)
 
-lstm model
+# lstm model
 model = keras.models.Sequential()
 # 50 units, 1 layer
 model.add(keras.layers.LSTM(50, input_shape=(X_train.shape[1], 1)))
 model.add(keras.layers.Dense(1))
 model.compile(optimizer = 'adam', loss = 'MSE', metrics=[keras.metrics.RootMeanSquaredError()]) # tells it how to measure success so it can adjust it's answers
 #Train
-history = model.fit(X_train, y_train, epochs=100, batch_size=32)
+history = model.fit(X_train, y_train, epochs=10, batch_size=32)
 # model.save('lstm_model.keras')
 # model = keras.models.load_model('lstm_model.keras')
 predictions = model.predict(X_test)
@@ -158,11 +165,8 @@ predictions = model.predict(X_test)
 # predictions = np.load('predictions.npy')
 # prediction_time = np.load('prediction_time.npy')
 
-# Still needed for comparison plots
-y_test_actual = target_scaler.inverse_transform(y_test.reshape(-1,1))
-
 # turns the units back to what we want
-# predictions = target_scaler.inverse_transform(predictions)
+predictions = target_scaler.inverse_transform(predictions)
 y_test_actual = target_scaler.inverse_transform(y_test.reshape(-1,1))
 prediction_time = tt_test[lstm_window_size:]
 # np.save('predictions.npy', predictions)
@@ -201,7 +205,7 @@ plt.ylim(-170,-10)
 # plt.plot(f1[peak_idx1], A1_filtered_dB[peak_idx1], 'ro')
 # plt.text(f1[peak_idx1] + 2, A1_filtered_dB[peak_idx1], f'{f1[peak_idx1]:.1f} Hz', color = 'red')
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_100Epoch_FFT_Spectrum_Comparison.png')
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_20Epoch_FFT_Spectrum_Comparison.png')
 
 fft_smoothing_window = 10
 A_test_ref_smooth = np.convolve(A_test_ref_dB, np.ones(fft_smoothing_window)/fft_smoothing_window, mode='same')
@@ -225,7 +229,7 @@ plt.ylim(-170,-10)
 # plt.plot(f1[peak_idx1], A1_filtered_smooth[peak_idx1], 'ro')
 # plt.text(f1[peak_idx1] + 2, A1_filtered_smooth[peak_idx1], f'{f1[peak_idx1]:.1f} Hz', color = 'red')
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_100Epoch_FFT_Smoothed_Spectrum_Comparison.png')
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_20Epoch_FFT_Smoothed_Spectrum_Comparison.png')
 
 
 # plt.figure(2)
@@ -249,7 +253,7 @@ plt.ylabel('Acceleration (g)')
 plt.title('005 Acceleration Comparison')
 plt.legend()
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_100Epoch_Acceleration_Comparison.png', dpi=300)
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_20Epoch_Acceleration_Comparison.png', dpi=300)
 
 
 plt.figure(7)
@@ -262,7 +266,7 @@ plt.xlim(100,100.5)
 plt.title('005 Zoom Acceleration Comparison')
 plt.legend()
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_100Epoch_Zoom_Acceleration_Comparison.png', dpi=300)
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_20Epoch_Zoom_Acceleration_Comparison.png', dpi=300)
 
 
 plt.figure(8)
@@ -274,7 +278,7 @@ plt.title('Training RMSE vs Epoch')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_100Epoch_Training_Error_vs_Epoch.png', dpi=300)
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_20Epoch_Training_Error_vs_Epoch.png', dpi=300)
 
 # Frequency Response Function (FRF) Ref vs Filt
 N = min(len(ac_test), len(ac_test_filtered))
@@ -313,5 +317,5 @@ plt.xscale('log')
 plt.xlim(0.1,30)
 plt.legend()
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/005_100Epoch_FRF_Magnitude_Comparison.png', dpi=300)
+plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_20Epoch_FRF_Magnitude_Comparison.png', dpi=300)
 plt.show()
