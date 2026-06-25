@@ -91,14 +91,20 @@ def process_data(filepath):
  A_test_ref, A_test_filtered, A_test_ref_dB,
  A_test_filtered_dB) = process_data(test_file)
 
-base_folder = r"C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/Runs"
+base_folder = (
+    r"C:\Users\giese\Dropbox\Satme_2026_IEEE_Edge_Processing_Compensator"
+    r"\Data\Benchtop Test\dataset_collection"
+)
 run_number = 1
-while os.path.exists(f"{base_folder}/Run_{run_number:03d}"):
+while any(
+    name.startswith(f"Run_{run_number:03d}")
+    for name in os.listdir(base_folder)
+):
     run_number += 1
 
 epochs = 20
 batch_size = 16
-window_size = 400
+window_size = 800
 hidden_units = 50
 
 run_folder = (
