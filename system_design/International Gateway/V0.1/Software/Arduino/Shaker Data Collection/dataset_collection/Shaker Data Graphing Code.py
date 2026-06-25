@@ -116,7 +116,7 @@ run_folder = (
 )
 os.makedirs(run_folder)
 
-lstm_window_size = 400 # how much history the network sees
+lstm_window_size = window_size # how much history the network sees
 
 ####### TRAIN
 input_scaler = StandardScaler()
