@@ -250,9 +250,9 @@ plt.figure(figsize=(6.5,3))
 
 # FFT vs Spectrogram: FFT -> what frequencies exist overall, Spectrogram -> how frequency changes over time
 plt.figure(1)
-plt.plot(f_test, A_test_ref_dB, color='blue', label='Reference')
-plt.plot(f_test, A_test_filtered_dB, color='black', label='Filtered')
-plt.plot(f_pred, A_pred_dB, color='green', label='LSTM Prediction')
+plt.plot(f_test, A_test_ref_dB, color='blue', label='Target Structural Response')
+plt.plot(f_test, A_test_filtered_dB, color='black', label='Attenuated Sensor Signal')
+plt.plot(f_pred, A_pred_dB, color='green', label='LSTM Compensation')
 plt.ylabel('Amplitude (dB)')
 plt.xlabel('Frequency (Hz)')
 plt.legend()
@@ -274,9 +274,9 @@ A_test_filtered_smooth = np.convolve(A_test_filtered_dB, np.ones(fft_smoothing_w
 A_pred_smooth = np.convolve(A_pred_dB, np.ones(fft_smoothing_window) / fft_smoothing_window, mode='same')
 
 plt.figure(5)
-plt.plot(f_test, A_test_ref_smooth, color='blue', label='Reference')
-plt.plot(f_test, A_test_filtered_smooth, color='black', label='Filtered')
-plt.plot(f_pred, A_pred_smooth, color='green', label='LSTM Prediction')
+plt.plot(f_test, A_test_ref_smooth, color='blue', label='Target Structural Response')
+plt.plot(f_test, A_test_filtered_smooth, color='black', label='Attenuated Sensor Signal')
+plt.plot(f_pred, A_pred_smooth, color='green', label='LSTM Compensation')
 plt.legend()
 plt.grid(True)
 plt.ylabel('Amplitude (dB)')
@@ -306,9 +306,9 @@ plt.savefig(f"{run_folder}/014_{epochs}Epoch_FFT_Smoothed_Spectrum_Comparison.pn
 # plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/006_Acceleration_Comparison.png', dpi=300)
 
 plt.figure(6)
-plt.plot(tt_test, ac_test, color='blue', label='Reference', alpha=0.7) # alpha controls transparency of lines
-plt.plot(tt_test, ac_test_filtered, color='black', label='Filtered', alpha=0.7)
-plt.plot(prediction_time, predictions, color='green', label = 'LSTM Prediction')
+plt.plot(tt_test, ac_test, color='blue', label='Target Structural Response', alpha=0.7) # alpha controls transparency of lines
+plt.plot(tt_test, ac_test_filtered, color='black', label='Attenuated Sensor Signal', alpha=0.7)
+plt.plot(prediction_time, predictions, color='green', label = 'LSTM Compensation')
 plt.xlabel('Time (s)')
 plt.ylabel('Acceleration (g)')
 # plt.title('014 Acceleration Comparison')
@@ -319,9 +319,9 @@ plt.savefig(f"{run_folder}/014_{epochs}Epoch_Acceleration_Comparison.png", dpi=3
 
 
 plt.figure(7)
-plt.plot(tt_test, ac_test, color='blue', label='Reference', alpha=0.7) # alpha controls transparency of lines
-plt.plot(tt_test, ac_test_filtered, color='black', label='Filtered', alpha=0.7)
-plt.plot(prediction_time, predictions, color='green', label = 'LSTM Prediction')
+plt.plot(tt_test, ac_test, color='blue', label='Target Structural Response', alpha=0.7) # alpha controls transparency of lines
+plt.plot(tt_test, ac_test_filtered, color='black', label='Attenuated Sensor Signal', alpha=0.7)
+plt.plot(prediction_time, predictions, color='green', label = 'LSTM Compensation')
 plt.xlabel('Time (s)')
 plt.ylabel('Acceleration (g)')
 plt.xlim(100,100.5)
@@ -353,7 +353,7 @@ f_frf = f_frf[mask]
 Y_ref = Y_ref[mask]
 Y_filtered = Y_filtered[mask]
 H_filtered = Y_filtered / (Y_ref + 1e-12)
-H_filtered_mag_dB = 20 * np.log10(np.abs(H_filtered) + 1e-12)
+H_filtered_mag = np.abs(H_filtered)
 
 # Frequency Response Function (FRF) Ref vs LSTM
 N_pred = min(len(predictions), len(y_test_actual))
@@ -365,15 +365,15 @@ f_pred_frf = f_pred_frf[mask_pred]
 Y_pred = Y_pred[mask_pred]
 Y_ref_pred = Y_ref_pred[mask_pred]
 H_lstm = Y_pred / (Y_ref_pred + 1e-12)
-H_lstm_mag_dB = 20 * np.log10(np.abs(H_lstm) + 1e-12)
+H_lstm_mag = np.abs(H_lstm)
 
 
 # Plot FRF, Ref vs Filt
 plt.figure(9, figsize=(6.5,3))
-plt.plot(f_frf, H_filtered_mag_dB, color='black', label='Filtered / Reference')
-plt.plot(f_pred_frf, H_lstm_mag_dB, color='green', label='LSTM / Reference')
+plt.plot(f_frf, H_filtered_mag, color='black', label='Attenuated Sensor Signal / Target Structural Response')
+plt.plot(f_pred_frf, H_lstm_mag, color='green', label='LSTM Compensation / Target Structural Response')
 plt.xlabel('Frequency (Hz)')
-plt.ylabel('Magnitude (dB)')
+plt.ylabel('Amplitude Ratio')
 # plt.title('FRF Magnitude Comparison')
 # plt.xscale('log')
 plt.xlim(0.1,30)
@@ -385,10 +385,10 @@ plt.savefig(f"{run_folder}/014_{epochs}Epoch_FRF_Magnitude_Comparison.png", dpi=
 
 # Plot FRF, Ref vs Filt
 plt.figure(10, figsize=(6.5,3))
-plt.plot(f_frf, H_filtered_mag_dB, color='black', label='Filtered / Reference')
-plt.plot(f_pred_frf, H_lstm_mag_dB, color='green', label='LSTM / Reference')
+plt.plot(f_frf, H_filtered_mag, color='black', label='Attenuated Sensor Signal / Target Structural Response')
+plt.plot(f_pred_frf, H_lstm_mag, color='green', label='LSTM Compensation / Target Structural Response')
 plt.xlabel('Frequency (Hz)')
-plt.ylabel('Magnitude (dB)')
+plt.ylabel('Amplitude Ratio')
 # plt.title('FRF Magnitude Comparison')
 plt.grid(True)
 plt.xlim(1,21)
