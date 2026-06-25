@@ -5,10 +5,12 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import tensorflow as tf
+import os
 from scipy import signal
 from scipy.signal import butter, filtfilt
 from sklearn.preprocessing import StandardScaler
 from tensorflow import keras # the package you are using for the LSTM is called tensorflow
+
 
 plt.close('all')
 
@@ -32,7 +34,6 @@ train_files = [
     'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/013.csv'
 ]
 test_file = 'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/014.csv'
-
 
 def highpass_filter(signal, cutoff, fs, order=4):
     # note to self: signal as in acceleration values (ac), 
@@ -90,6 +91,24 @@ def process_data(filepath):
  A_test_ref, A_test_filtered, A_test_ref_dB,
  A_test_filtered_dB) = process_data(test_file)
 
+base_folder = r"C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/Runs"
+run_number = 1
+while os.path.exists(f"{base_folder}/Run_{run_number:03d}"):
+    run_number += 1
+
+epochs = 20
+batch_size = 16
+window_size = 400
+hidden_units = 50
+
+run_folder = (
+    f"{base_folder}/"
+    f"Run_{run_number:03d}"
+    f"_Epoch{epochs}"
+    f"_Batch{batch_size}"
+    f"_Window{window_size}"
+)
+os.makedirs(run_folder)
 
 lstm_window_size = 400 # how much history the network sees
 
@@ -152,14 +171,48 @@ print("y_test:", y_test.shape)
 # lstm model
 model = keras.models.Sequential()
 # 50 units, 1 layer
-model.add(keras.layers.LSTM(50, input_shape=(X_train.shape[1], 1)))
+model.add(keras.layers.LSTM(hidden_units, input_shape=(X_train.shape[1], 1)))
 model.add(keras.layers.Dense(1))
 model.compile(optimizer = 'adam', loss = 'MSE', metrics=[keras.metrics.RootMeanSquaredError()]) # tells it how to measure success so it can adjust it's answers
 #Train
-history = model.fit(X_train, y_train, epochs=10, batch_size=32)
+history = model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size)
+print(f"\nRun saved to:\n{run_folder}\n")
+model.save(f"{run_folder}/LSTM_Model.keras")
+history_df = pd.DataFrame(history.history)
+history_df.to_csv(f"{run_folder}/TrainingHistory.csv", index=False)
 # model.save('lstm_model.keras')
 # model = keras.models.load_model('lstm_model.keras')
 predictions = model.predict(X_test)
+
+for i, weight in enumerate(model.get_weights()):
+    np.savetxt(f"{run_folder}/weights_layer_{i}.csv",weight,delimiter=',')
+
+settings = {
+    "Window Size": window_size,
+    "Epochs": epochs,
+    "Batch Size": batch_size,
+    "Training Files": len(train_files),
+    "Hidden Units": hidden_units,
+    "Optimizer": "Adam",
+    "Loss": "MSE",
+}
+settings["Test File"] = os.path.basename(test_file)
+settings["Training Files"] = ", ".join(os.path.basename(f) for f in train_files)
+
+settings_df = pd.DataFrame([settings])
+settings_df.to_csv(f"{run_folder}/Model_Settings.csv", index=False)
+
+results = {
+    "Final Loss": history.history['loss'][-1],
+    "Final RMSE": history.history['root_mean_squared_error'][-1],
+    "Epochs": epochs,
+    "Batch Size": batch_size,
+    "Window Size": window_size,
+    "Hidden Units": hidden_units,
+    "Training Files": len(train_files),
+    "Test File": os.path.basename(test_file)
+}
+pd.DataFrame([results]).to_csv(f"{run_folder}/RunSummary.csv", index=False)
 
 # Load previously saved model outputs
 # predictions = np.load('predictions.npy')
@@ -169,8 +222,16 @@ predictions = model.predict(X_test)
 predictions = target_scaler.inverse_transform(predictions)
 y_test_actual = target_scaler.inverse_transform(y_test.reshape(-1,1))
 prediction_time = tt_test[lstm_window_size:]
-# np.save('predictions.npy', predictions)
-# np.save('prediction_time.npy', prediction_time)
+
+np.save(f"{run_folder}/predictions.npy", predictions)
+np.save(f"{run_folder}/prediction_time.npy", prediction_time)
+
+prediction_df = pd.DataFrame({
+    "Time": prediction_time,
+    "Reference": y_test_actual.flatten(),
+    "Prediction": predictions.flatten()
+})
+prediction_df.to_csv(f"{run_folder}/Predictions.csv", index=False)
 pred_fft = np.fft.fft(predictions.flatten())
 
 
@@ -205,7 +266,7 @@ plt.ylim(-170,-10)
 # plt.plot(f1[peak_idx1], A1_filtered_dB[peak_idx1], 'ro')
 # plt.text(f1[peak_idx1] + 2, A1_filtered_dB[peak_idx1], f'{f1[peak_idx1]:.1f} Hz', color = 'red')
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_10Epoch_FFT_Spectrum_Comparison.png')
+plt.savefig(f"{run_folder}/014_{epochs}Epoch_FFT_Spectrum_Comparison.png", dpi=300)
 
 fft_smoothing_window = 10
 A_test_ref_smooth = np.convolve(A_test_ref_dB, np.ones(fft_smoothing_window)/fft_smoothing_window, mode='same')
@@ -229,7 +290,7 @@ plt.ylim(-170,-10)
 # plt.plot(f1[peak_idx1], A1_filtered_smooth[peak_idx1], 'ro')
 # plt.text(f1[peak_idx1] + 2, A1_filtered_smooth[peak_idx1], f'{f1[peak_idx1]:.1f} Hz', color = 'red')
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_10Epoch_FFT_Smoothed_Spectrum_Comparison.png')
+plt.savefig(f"{run_folder}/014_{epochs}Epoch_FFT_Smoothed_Spectrum_Comparison.png", dpi=300)
 
 
 # plt.figure(2)
@@ -252,8 +313,9 @@ plt.xlabel('Time (s)')
 plt.ylabel('Acceleration (g)')
 # plt.title('014 Acceleration Comparison')
 plt.legend()
+plt.grid(True)
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_10Epoch_Acceleration_Comparison.png', dpi=300)
+plt.savefig(f"{run_folder}/014_{epochs}Epoch_Acceleration_Comparison.png", dpi=300)
 
 
 plt.figure(7)
@@ -265,8 +327,9 @@ plt.ylabel('Acceleration (g)')
 plt.xlim(100,100.5)
 # plt.title('014 Zoom Acceleration Comparison')
 plt.legend()
+plt.grid(True)
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_10Epoch_Zoom_Acceleration_Comparison.png', dpi=300)
+plt.savefig(f"{run_folder}/014_{epochs}Epoch_Zoom_Acceleration_Comparison.png", dpi=300)
 
 
 plt.figure(8)
@@ -278,7 +341,7 @@ plt.ylabel('Error')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_10Epoch_Training_Error_vs_Epoch.png', dpi=300)
+plt.savefig(f"{run_folder}/014_{epochs}Epoch_Training_Error_vs_Epoch.png", dpi=300)
 
 # Frequency Response Function (FRF) Ref vs Filt
 N = min(len(ac_test), len(ac_test_filtered))
@@ -312,12 +375,12 @@ plt.plot(f_pred_frf, H_lstm_mag_dB, color='green', label='LSTM / Reference')
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Magnitude (dB)')
 # plt.title('FRF Magnitude Comparison')
-plt.grid(True)
 # plt.xscale('log')
 plt.xlim(0.1,30)
 plt.legend()
+plt.grid(True)
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_10Epoch_FRF_Magnitude_Comparison.png', dpi=300)
+plt.savefig(f"{run_folder}/014_{epochs}Epoch_FRF_Magnitude_Comparison.png", dpi=300)
 
 
 # Plot FRF, Ref vs Filt
@@ -331,5 +394,5 @@ plt.grid(True)
 plt.xlim(1,21)
 plt.legend()
 plt.tight_layout()
-plt.savefig('C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/014_10Epoch_Zoomed_FRF_Magnitude_Comparison.png', dpi=300)
+plt.savefig(f"{run_folder}/014_{epochs}Epoch_Zoomed_FRF_Magnitude_Comparison.png", dpi=300)
 plt.show()
