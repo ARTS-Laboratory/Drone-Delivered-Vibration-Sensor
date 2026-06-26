@@ -93,9 +93,9 @@ def process_data(filepath):
 
 base_folder = (
     r"C:\Users\giese\Dropbox\Satme_2026_IEEE_Edge_Processing_Compensator"
-    r"\Data\Benchtop Test\dataset_collection"
+    r"\Data\Benchtop Test\dataset_collection\Runs"
 )
-run_number = 1
+run_number = 2
 while any(
     name.startswith(f"Run_{run_number:03d}")
     for name in os.listdir(base_folder)
