@@ -93,9 +93,9 @@ def process_data(filepath):
 
 base_folder = (
     r"C:\Users\giese\Dropbox\Satme_2026_IEEE_Edge_Processing_Compensator"
-    r"\Data\Benchtop Test\dataset_collection\Runs"
+    r"\Data\Benchtop Test\dataset_collection"
 )
-run_number = 2
+run_number = 1
 while any(
     name.startswith(f"Run_{run_number:03d}")
     for name in os.listdir(base_folder)
@@ -104,7 +104,7 @@ while any(
 
 epochs = 20
 batch_size = 16
-window_size = 800
+window_size = 1200
 hidden_units = 50
 
 run_folder = (
@@ -376,8 +376,10 @@ H_lstm_mag = np.abs(H_lstm)
 
 # Plot FRF, Ref vs Filt
 plt.figure(9, figsize=(6.5,3))
-plt.plot(f_frf, H_filtered_mag, color='black', label='Attenuated Sensor Signal / Target Structural Response')
-plt.plot(f_pred_frf, H_lstm_mag, color='green', label='LSTM Compensation / Target Structural Response')
+threshold = 1e-6
+valid = np.abs(Y_ref) > threshold
+plt.plot(f_frf[valid], H_filtered_mag[valid], color='black', label='Attenuated Sensor Signal / Target Structural Response')
+plt.plot(f_pred_frf[valid], H_lstm_mag[valid], color='green', label='LSTM Compensation / Target Structural Response')
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Amplitude Ratio')
 # plt.title('FRF Magnitude Comparison')
@@ -391,8 +393,8 @@ plt.savefig(f"{run_folder}/014_{epochs}Epoch_FRF_Magnitude_Comparison.png", dpi=
 
 # Plot FRF, Ref vs Filt
 plt.figure(10, figsize=(6.5,3))
-plt.plot(f_frf, H_filtered_mag, color='black', label='Attenuated Sensor Signal / Target Structural Response')
-plt.plot(f_pred_frf, H_lstm_mag, color='green', label='LSTM Compensation / Target Structural Response')
+plt.plot(f_frf[valid], H_filtered_mag[valid], color='black', label='Attenuated Sensor Signal / Target Structural Response')
+plt.plot(f_pred_frf[valid], H_lstm_mag[valid], color='green', label='LSTM Compensation / Target Structural Response')
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Amplitude Ratio')
 # plt.title('FRF Magnitude Comparison')
