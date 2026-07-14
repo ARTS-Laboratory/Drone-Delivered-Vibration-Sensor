@@ -11,8 +11,10 @@ from scipy.signal import butter, filtfilt
 from sklearn.preprocessing import StandardScaler
 from tensorflow import keras # the package you are using for the LSTM is called tensorflow
 
-
 plt.close('all')
+
+print("TensorFlow version:", tf.__version__)
+print("Available GPUs:", tf.config.list_physical_devices('GPU'))
 
 # Font specifications
 plt.rcParams['font.family'] = 'Times New Roman'
@@ -24,16 +26,29 @@ plt.rcParams['ytick.labelsize'] = 12
 plt.rcParams['legend.fontsize'] = 12
 
 #%% Load data
+original_data_folder = (
+    "/work/aigiese/Edge_Compensator/data/"
+    "Color SD Card (Top Sensor Package)"
+)
+compensation_data_folder = (
+    "/work/aigiese/Edge_Compensator/data/"
+    "Edge-error compensation Results"
+)
 train_files = [
-    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/006.csv',
-    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/008.csv',
-    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/009.csv',
-    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/010.csv',
-    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/011.csv',
-    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/012.csv',
-    'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/013.csv'
+    f'{original_data_folder}/006.csv',
+    f'{original_data_folder}/008.csv',
+    f'{original_data_folder}/009.csv',
+    f'{original_data_folder}/010.csv',
+    f'{original_data_folder}/011.csv',
+    f'{original_data_folder}/012.csv',
+    f'{original_data_folder}/013.csv',
+    f'{compensation_data_folder}/C006.CSV',
+    f'{compensation_data_folder}/C007.CSV',
+    f'{compensation_data_folder}/C008.CSV',
+    f'{compensation_data_folder}/C009.CSV',
+    f'{compensation_data_folder}/C010.CSV'
 ]
-test_file = 'C:/Users/giese/OneDrive/Documents/GitHub/Drone-Delivered-Vibration-Sensor/system_design/International Gateway/V0.1/Software/Arduino/Shaker Data Collection/dataset_collection/Color SD Card (Top Sensor Package)/014.csv'
+test_file = f'{original_data_folder}/014.csv'
 
 def highpass_filter(signal, cutoff, fs, order=4):
     # note to self: signal as in acceleration values (ac), 
@@ -91,11 +106,10 @@ def process_data(filepath):
  A_test_ref, A_test_filtered, A_test_ref_dB,
  A_test_filtered_dB) = process_data(test_file)
 
-base_folder = (
-    r"C:\Users\giese\Dropbox\Satme_2026_IEEE_Edge_Processing_Compensator"
-    r"\Data\Benchtop Test\dataset_collection"
-)
-run_number = 1
+base_folder = "/work/aigiese/Edge_Compensator/results/Runs"
+os.makedirs(base_folder, exist_ok=True)
+
+run_number = 2
 while any(
     name.startswith(f"Run_{run_number:03d}")
     for name in os.listdir(base_folder)
@@ -103,8 +117,8 @@ while any(
     run_number += 1
 
 epochs = 20
-batch_size = 16
-window_size = 1200
+batch_size = 32
+window_size = 400
 hidden_units = 50
 
 run_folder = (
@@ -344,6 +358,7 @@ plt.plot(history.history['root_mean_squared_error'], label='RMSE')
 plt.xlabel('Epoch')
 plt.ylabel('Error')
 # plt.title('Training RMSE vs Epoch')
+plt.xticks(np.arange(2, epochs + 1, 2))
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
@@ -358,7 +373,11 @@ mask = f_frf >= 0
 f_frf = f_frf[mask]
 Y_ref = Y_ref[mask]
 Y_filtered = Y_filtered[mask]
-H_filtered = Y_filtered / (Y_ref + 1e-12)
+threshold = 0.01 * np.max(np.abs(Y_ref))
+H_filtered = np.zeros_like(Y_filtered)
+H_filtered[np.abs(Y_ref)>threshold] = (
+    Y_filtered[np.abs(Y_ref)>threshold] / Y_ref[np.abs(Y_ref)>threshold]
+)
 H_filtered_mag = np.abs(H_filtered)
 
 # Frequency Response Function (FRF) Ref vs LSTM
@@ -370,21 +389,24 @@ mask_pred = f_pred_frf >= 0
 f_pred_frf = f_pred_frf[mask_pred]
 Y_pred = Y_pred[mask_pred]
 Y_ref_pred = Y_ref_pred[mask_pred]
-H_lstm = Y_pred / (Y_ref_pred + 1e-12)
+threshold_pred = 0.01 * np.max(np.abs(Y_ref_pred))
+H_lstm = np.zeros_like(Y_pred)
+H_lstm[np.abs(Y_ref_pred)>threshold_pred] = (
+    Y_pred[np.abs(Y_ref_pred)>threshold_pred] / Y_ref_pred[np.abs(Y_ref_pred)>threshold_pred]
+)
 H_lstm_mag = np.abs(H_lstm)
 
 
 # Plot FRF, Ref vs Filt
 plt.figure(9, figsize=(6.5,3))
-threshold = 1e-6
-valid = np.abs(Y_ref) > threshold
-plt.plot(f_frf[valid], H_filtered_mag[valid], color='black', label='Attenuated Sensor Signal / Target Structural Response')
-plt.plot(f_pred_frf[valid], H_lstm_mag[valid], color='green', label='LSTM Compensation / Target Structural Response')
+plt.plot(f_frf, H_filtered_mag, color='black', label='Attenuated Sensor Signal / Target Structural Response')
+plt.plot(f_pred_frf, H_lstm_mag, color='green', label='LSTM Compensation / Target Structural Response')
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Amplitude Ratio')
 # plt.title('FRF Magnitude Comparison')
 # plt.xscale('log')
 plt.xlim(0.1,30)
+plt.ylim(0,5)
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
@@ -393,13 +415,14 @@ plt.savefig(f"{run_folder}/014_{epochs}Epoch_FRF_Magnitude_Comparison.png", dpi=
 
 # Plot FRF, Ref vs Filt
 plt.figure(10, figsize=(6.5,3))
-plt.plot(f_frf[valid], H_filtered_mag[valid], color='black', label='Attenuated Sensor Signal / Target Structural Response')
-plt.plot(f_pred_frf[valid], H_lstm_mag[valid], color='green', label='LSTM Compensation / Target Structural Response')
+plt.plot(f_frf, H_filtered_mag, color='black', label='Attenuated Sensor Signal / Target Structural Response')
+plt.plot(f_pred_frf, H_lstm_mag, color='green', label='LSTM Compensation / Target Structural Response')
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Amplitude Ratio')
 # plt.title('FRF Magnitude Comparison')
 plt.grid(True)
 plt.xlim(1,21)
+plt.ylim(0,5)
 plt.legend()
 plt.tight_layout()
 plt.savefig(f"{run_folder}/014_{epochs}Epoch_Zoomed_FRF_Magnitude_Comparison.png", dpi=300)
